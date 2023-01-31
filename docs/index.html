@@ -76,8 +76,10 @@
                   <div class="titlepage">
                      <h2>About</h2>
                         <span>This website is the portfolio for the course ECE 5160: Fast Robot at Cornell University, Spring 2023. <br>
-                              Instructor: Prof. Kirstin Petersen<br>
-                              All codes and reports are written by Zechen Wang(zw652) unless noted otherwise.
+                              All codes and reports are written by Zechen Wang(zw652) unless specifically noted otherwise.<br>
+                              Instructor: Prof. Kirstin Petersen<br><br>
+                              <em>This site is still under heavy construction.<br>
+                                  Maybe you'll see something prettier next time!</em>
                               <a href="https://cei-lab.github.io/FastRobots-2023/" target="_blank">Course Website</a>
                               <a href="https://github.com/zechenwang00/ECE-5160-Sp23" target="_blank">Github Repo</a>
                         </span>
@@ -99,10 +101,10 @@
                              <h3 style="text-align:left;font-weight: bold; color:#fc4311;">Lab 1</h3>
                              <h4 style="text-align:left;font-weight: bold;">Introduction</b></h4>
                                  <p style="text-align: left;padding: 0px 30px;">
-                                 This lab is the first assignment aimed to let students setup and become familiar with the Arduino IDE 
-                                 and the hardware component Artemis Nano which we will be using throughout the semester. The tasks in this
-                                 lab assignment includes reading relevant datasheets, configuring the IDE, compiling and uploading programs 
-                                 to the board, and perform tests on the board by viewing outputs from the serial interface.<br>
+                                 This lab is the first assignment aimed to let students set up and become familiar with the Arduino IDE and 
+                                 the hardware component Artemis Nano which we will be using throughout the semester. The tasks in this lab 
+                                 assignment include reading relevant datasheets, configuring the IDE, compiling and uploading programs to 
+                                 the board, and performing tests on the board by viewing outputs from the serial interface.<br>
                                  <em>Note: This lab assignment also includes the 5000-level tasks.<br><br></em>
                                  </p>
                               <h4 style="text-align:left;font-weight: bold;">Example I: Blink</b></h4>
@@ -117,11 +119,11 @@
                                  </video><br><br>
                               <h4 style="text-align:left;font-weight: bold;">Example II: Serial</b></h4>
                                  <p style="text-align: left;padding: 0px 30px;">
-                                 In this part of the lab we load program the board using a serial communication example code and test the
-                                 interface on Arduino IDE. The program first prints out several debug messages and then proceed to enter
-                                 a echo mode, which simply sends whatever message the board receives back to the PC. In the following video,
-                                 we could see that two messages "new msg" and "test2" were succesfully sent to the Artemis board and echoed
-                                 back to the serial interface. <br>
+                                 In this part of the lab, we load program the board using a serial communication example code and test the 
+                                 interface on Arduino IDE. The program first prints out several debug messages and then proceeds to enter a 
+                                 echo mode, which simply sends whatever message the board receives back to the PC. In the following video, 
+                                 we could see that two messages "new msg" and "test2" were succesfully sent to the Artemis board and echoed 
+                                 back to the serial interface.<br>
                                  <br>
                                  </p>
                                  <video height=640px; controls>
@@ -139,7 +141,34 @@
                                  </p>
                                  <video height=640px; controls>
                                     <source src="assets/lab1/temp.mp4" type=video/mp4>
-                                 </video><br><br> 
+                                 </video><br><br>
+                              <h4 style="text-align:left;font-weight: bold;">Example IV: Microphone</b></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                 The last part of this lab is to test the microphone on the Artemis board. A microphone testing example program
+                                 is provided to print out the strongest audio signal in the frequency spectrum. The program will sample from the
+                                 microphone, perform a fast Fourier transform(FFT), and then pick out the signal with the highest intensity. <br><br>
+                                 For the 5000-level task, the program should also behave as an electronic tuner, that responds to musical "A" notes. 
+                                 Specifically, my program would respond to "A" notes in different octaves(A1 to A8), but due to environmental noise 
+                                 I could only demonstrate some of them (A4, A5, A6). In addition, I found out that the program will freeze entirely 
+                                 when a delay function is used to toggle the LED. To solve that, I implemented a non-blocking LED blinking mechanism 
+                                 by reading time from the internal clock, so that the program would simply check if the LED should be toggled during 
+                                 every iteration in the main loop.<br>
+                                 <br>
+                                 </p>
+                                 <video height=640px; controls>
+                                    <source src="assets/lab1/mic.mp4" type=video/mp4>
+                                 </video><br><br>
+                                 <pre>
+                                    <code>
+// non-blocking delay LED blinker reference: https://docs.arduino.cc/built-in-examples/digital/BlinkWithoutDelay
+// full program included in github repo, Lab1 folder
+
+if (currentMillis - previousMillis >= interval) {
+   previousMillis = currentMillis;
+   digitalWrite(LED_BUILTIN, LOW);
+}
+                                    </code> 
+                                 </pre>
 
 <!--                          <img class="img-rounded" src="images/penguin.jpg" alt="Generic placeholder image" style="width:20%; text-align: center;"><br>
                               <p>Placeholder image</p> -->
