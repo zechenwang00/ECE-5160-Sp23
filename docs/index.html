@@ -103,7 +103,7 @@
                                  and the hardware component Artemis Nano which we will be using throughout the semester. The tasks in this
                                  lab assignment includes reading relevant datasheets, configuring the IDE, compiling and uploading programs 
                                  to the board, and perform tests on the board by viewing outputs from the serial interface.<br>
-                                 <em>Note: This lab assignment also includes 5000-level tasks.<br><br></em>
+                                 <em>Note: This lab assignment also includes the 5000-level tasks.<br><br></em>
                                  </p>
                               <h4 style="text-align:left;font-weight: bold;">Example I: Blink</b></h4>
                                  <p style="text-align: left;padding: 0px 30px;">
@@ -115,9 +115,34 @@
                                  <video width=60%; controls>
                                     <source src="assets/lab1/blink.mp4" type=video/mp4>
                                  </video><br><br>
+                              <h4 style="text-align:left;font-weight: bold;">Example II: Serial</b></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                 In this part of the lab we load program the board using a serial communication example code and test the
+                                 interface on Arduino IDE. The program first prints out several debug messages and then proceed to enter
+                                 a echo mode, which simply sends whatever message the board receives back to the PC. In the following video,
+                                 we could see that two messages "new msg" and "test2" were succesfully sent to the Artemis board and echoed
+                                 back to the serial interface. <br>
+                                 <br>
+                                 </p>
+                                 <video height=640px; controls>
+                                    <source src="assets/lab1/serial.mp4" type=video/mp4>
+                                 </video><br><br> 
+                              <h4 style="text-align:left;font-weight: bold;">Example III: Temperature</b></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                 The third part of this lab is to test the functionality of the internal temperature sensor on the Artemis 
+                                 board. After loading an example temperature reading program, we could directly fetch the readings from the
+                                 temperature sensor through an serial interface which we tested in the previous part. The process of changing 
+                                 the temperature was taking a considerable amount of time, as I was simply using my hands to transfer some heat. 
+                                 From the video below, you could see the readings from the temperature sensor increasing slowly. 
+                                 (you may want to fast forward a little bit!)<br>
+                                 <br>
+                                 </p>
+                                 <video height=640px; controls>
+                                    <source src="assets/lab1/temp.mp4" type=video/mp4>
+                                 </video><br><br> 
 
-                              <img class="img-rounded" src="images/penguin.jpg" alt="Generic placeholder image" style="width:20%; text-align: center;"><br>
-                              <p>Placeholder image</p>
+<!--                          <img class="img-rounded" src="images/penguin.jpg" alt="Generic placeholder image" style="width:20%; text-align: center;"><br>
+                              <p>Placeholder image</p> -->
                      </div>
                   </div>
                </div>
