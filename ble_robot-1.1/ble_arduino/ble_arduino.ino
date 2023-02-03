@@ -28,7 +28,7 @@ RobotCommand robot_cmd(":|");
 EString tx_estring_value;
 float tx_float_value = 0.0;
 
-long interval = 0;
+long interval = 1000;
 static long previousMillis = 0;
 unsigned long currentMillis = 0;
 //////////// Global Variables ////////////
