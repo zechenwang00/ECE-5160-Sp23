@@ -78,7 +78,7 @@
                         <span>This website is the portfolio for the course ECE 5160: Fast Robot at Cornell University, Spring 2023. <br>
                               All codes and reports are written by Zechen Wang(zw652) unless specifically noted otherwise.<br>
                               Instructor: Prof. Kirstin Petersen<br><br>
-                              <em>This site is still under heavy construction.<br>
+                              1This site is still under construction.<br>
                                   Maybe you'll see something prettier next time!</em>
                               <a href="https://cei-lab.github.io/FastRobots-2023/" target="_blank">Course Website</a>
                               <a href="https://github.com/zechenwang00/ECE-5160-Sp23" target="_blank">Github Repo</a>
@@ -99,9 +99,9 @@
                      <h2>Labs </h2>
                      <div>
                              <details>
-                             <summary style="text-align:left;font-weight: bold; color:#fc4311;font-size: 24px;">Lab 1</summary>
+                             <summary style="text-align:left;font-weight: bold; color:#fc4311;font-size: 24px;text-decoration:underline;">Lab 1: Setup</summary>
 <!--                              <h3 style="text-align:left;font-weight: bold; color:#fc4311;">Lab 1</h3> -->
-                             <h4 style="text-align:left;font-weight: bold;">Introduction</b></h4>
+                             <h4 style="text-align:left;font-weight: bold;"><br>Introduction</b></h4>
                                  <p style="text-align: left;padding: 0px 30px;">
                                  This lab is the first assignment aimed to let students set up and become familiar with the Arduino IDE and 
                                  the hardware component Artemis Nano which we will be using throughout the semester. The tasks in this lab 
@@ -112,7 +112,7 @@
                               <h4 style="text-align:left;font-weight: bold;">Example I: Blink</b></h4>
                                  <p style="text-align: left;padding: 0px 30px;">
                                  The first demonstrable result is to have the Artemis Nano board loaded with an example blink program, and
-                                 to verify the LED blinking. The example blinking program has one single function of toggling a onboard LED 
+                                 to verify the LED blinking. The example blinking program has one single function of toggling an onboard LED 
                                  every 450 miliseconds (900ms as a period). The results have been recorded in the following video: <br>
                                  <br><br>
                                  </p>
@@ -175,9 +175,9 @@ if (currentMillis - previousMillis >= interval) {
 
 
                              <details>
-                             <summary style="text-align:left;font-weight: bold; color:#fc4311;font-size: 24px;">Lab 2</summary>
+                             <summary style="text-align:left;font-weight: bold; color:#fc4311;font-size: 24px;text-decoration:underline;">Lab 2: BLE</summary>
 <!--                              <h3 style="text-align:left;font-weight: bold; color:#fc4311;">Lab 2</h3> -->
-                             <h4 style="text-align:left;font-weight: bold;">Introduction</b></h4>
+                             <h4 style="text-align:left;font-weight: bold;"><br>Introduction</b></h4>
                                  <p style="text-align: left;padding: 0px 30px;">
                                  This lab includes various tasks related to the use of bluetooth to establish connection between the Artemis 
                                  board and our computer. On the Artemis side, we would need to modify the .ino files in order to implement 
@@ -185,15 +185,40 @@ if (currentMillis - previousMillis >= interval) {
                                  processes different kinds of information sent back from the artemis board, extracts useful information, and 
                                  formats output. After implementing and testing various functions/commands, we will also test the efficiency 
                                  and reliability of data transmission by sending data packets of various sizes. (5000-level assignment)
-                                 <br><br></em>
                                  </p>
-                              <h4 style="text-align:left;font-weight: bold;">Example I: Blink</b></h4>
+                                 <img class="img-rounded" src="assets/lab2/BLE.png" alt="BLE image" style="width:20%; text-align: center;"><br>
+                              <h4 style="text-align:left;font-weight: bold;">Prelab</b></h4>
                                  <p style="text-align: left;padding: 0px 30px;">
-                                 The first demonstrable result is to have the Artemis Nano board loaded with an example blink program, and
-                                 to verify the LED blinking. The example blinking program has one single function of toggling a onboard LED 
-                                 every 450 miliseconds (900ms as a period). The results have been recorded in the following video: <br>
+                                 Before starting to work on any of the lab tasks, we want to make sure we can establish a stable connection between 
+                                 the BLE device and our PC. First we want to copy the hardware MAC address of our device, and generate a unique 
+                                 identifier to be placed in a configuration file. Change the first two lines in the following file:
+                                 </p>
+                                 <br><br>
+                                 <img class="img-rounded" src="assets/lab2/settings.png" alt="settings image" style="width:60%; text-align: center;"><br>
+                                 <br><br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                 Then we will be ready for the connection! After establishing the connection, the Artemis side and the PC side will 
+                                 work together to transmit/receive information. How a typical task will be done is: <br><br>
+                                 1. PC sends command to Artemis<br>
+                                 2. Artemis receives command and does some processing<br>
+                                 3. Artemis send data back to PC<br>
+                                 4. PC process or display data<br>
+                                 </p>
+                              <h4 style="text-align:left;font-weight: bold;"><br>Jupyter Notebook</b></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                 placeholder for notebook link
+                                 </p>
+                              <h4 style="text-align:left;font-weight: bold;"><br>Task 1: Echo Command</b></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                 Echo command simply lets Artemis echo back a message from the PC. We first send an echo command with a string payload 
+                                 to Artemis. After receiving the string, Artemis replies back the same string to the PC. On the PC side, we woud need to 
+                                 call a function to receive such string and print it to the console.
+                                 </p>
+
                                  <br><br>
                                  </p>
+
+                                 
                               </details>
 
 
