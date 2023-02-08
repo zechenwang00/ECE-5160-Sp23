@@ -75,11 +75,11 @@
                <div class="col-md-12">
                   <div class="titlepage">
                      <h2>About</h2>
-                        <span>This website is the portfolio for the course ECE 5160: Fast Robot at Cornell University, Spring 2023. <br>
+                        <span>
+                              This website is the portfolio for the course ECE 5160: Fast Robot at Cornell University, Spring 2023. <br>
                               All codes and reports are written by Zechen Wang(zw652) unless specifically noted otherwise.<br>
                               Instructor: Prof. Kirstin Petersen<br><br>
-                              This site is still under construction.<br>
-                                  Maybe you'll see something prettier next time!</em>
+                              <em>This site is still under construction.<br>Maybe you'll see something prettier next time!</em>
                               <a href="https://cei-lab.github.io/FastRobots-2023/" target="_blank">Course Website</a>
                               <a href="https://github.com/zechenwang00/ECE-5160-Sp23" target="_blank">Github Repo</a>
                         </span>
@@ -101,61 +101,58 @@
                              <details>
                              <summary style="text-align:left;font-weight: bold; color:#fc4311;font-size: 24px;text-decoration:underline;">Lab 1: Setup</summary>
 <!--                              <h3 style="text-align:left;font-weight: bold; color:#fc4311;">Lab 1</h3> -->
-                             <h4 style="text-align:left;font-weight: bold;"><br>Introduction</b></h4>
+                             <h4 style="text-align:left;font-weight: bold;"><br>Introduction</h4>
                                  <p style="text-align: left;padding: 0px 30px;">
-                                 This lab is the first assignment aimed to let students set up and become familiar with the Arduino IDE and 
-                                 the hardware component Artemis Nano which we will be using throughout the semester. The tasks in this lab 
-                                 assignment include reading relevant datasheets, configuring the IDE, compiling and uploading programs to 
-                                 the board, and performing tests on the board by viewing outputs from the serial interface.<br>
-                                 <em>Note: This lab assignment also includes the 5000-level tasks.<br><br></em>
+                                    This lab is the first assignment aimed to let students set up and become familiar with the Arduino IDE and 
+                                    the hardware component Artemis Nano which we will be using throughout the semester. The tasks in this lab 
+                                    assignment include reading relevant datasheets, configuring the IDE, compiling and uploading programs to 
+                                    the board, and performing tests on the board by viewing outputs from the serial interface.<br>
+                                    <em>Note: This lab assignment also includes the 5000-level tasks.<br><br></em>
                                  </p>
-                              <h4 style="text-align:left;font-weight: bold;">Example I: Blink</b></h4>
+                              <h4 style="text-align:left;font-weight: bold;">Example I: Blink</h4>
                                  <p style="text-align: left;padding: 0px 30px;">
-                                 The first demonstrable result is to have the Artemis Nano board loaded with an example blink program, and
-                                 to verify the LED blinking. The example blinking program has one single function of toggling an onboard LED 
-                                 every 450 miliseconds (900ms as a period). The results have been recorded in the following video: <br>
-                                 <br><br>
+                                    The first demonstrable result is to have the Artemis Nano board loaded with an example blink program, and
+                                    to verify the LED blinking. The example blinking program has one single function of toggling an onboard LED 
+                                    every 450 miliseconds (900ms as a period). The results have been recorded in the following video: <br>
+                                    <br><br>
                                  </p>
                                  <video width=60%; controls>
                                     <source src="assets/lab1/blink.mp4" type=video/mp4>
                                  </video><br><br>
-                              <h4 style="text-align:left;font-weight: bold;">Example II: Serial</b></h4>
+                              <h4 style="text-align:left;font-weight: bold;">Example II: Serial</h4>
                                  <p style="text-align: left;padding: 0px 30px;">
-                                 In this part of the lab, we load program the board using a serial communication example code and test the 
-                                 interface on Arduino IDE. The program first prints out several debug messages and then proceeds to enter a 
-                                 echo mode, which simply sends whatever message the board receives back to the PC. In the following video, 
-                                 we could see that two messages "new msg" and "test2" were succesfully sent to the Artemis board and echoed 
-                                 back to the serial interface.<br>
-                                 <br>
+                                    In this part of the lab, we load program the board using a serial communication example code and test the 
+                                    interface on Arduino IDE. The program first prints out several debug messages and then proceeds to enter a 
+                                    echo mode, which simply sends whatever message the board receives back to the PC. In the following video, 
+                                    we could see that two messages "new msg" and "test2" were succesfully sent to the Artemis board and echoed 
+                                    back to the serial interface.<br><br>
                                  </p>
                                  <video height=640px; controls>
                                     <source src="assets/lab1/serial.mp4" type=video/mp4>
                                  </video><br><br> 
-                              <h4 style="text-align:left;font-weight: bold;">Example III: Temperature</b></h4>
+                              <h4 style="text-align:left;font-weight: bold;">Example III: Temperature</h4>
                                  <p style="text-align: left;padding: 0px 30px;">
-                                 The third part of this lab is to test the functionality of the internal temperature sensor on the Artemis 
-                                 board. After loading an example temperature reading program, we could directly fetch the readings from the
-                                 temperature sensor through an serial interface which we tested in the previous part. The process of changing 
-                                 the temperature was taking a considerable amount of time, as I was simply using my hands to transfer some heat. 
-                                 From the video below, you could see the readings from the temperature sensor increasing slowly. 
-                                 (you may want to fast forward a little bit!)<br>
-                                 <br>
+                                    The third part of this lab is to test the functionality of the internal temperature sensor on the Artemis 
+                                    board. After loading an example temperature reading program, we could directly fetch the readings from the
+                                    temperature sensor through an serial interface which we tested in the previous part. The process of changing 
+                                    the temperature was taking a considerable amount of time, as I was simply using my hands to transfer some heat. 
+                                    From the video below, you could see the readings from the temperature sensor increasing slowly. 
+                                    (you may want to fast forward a little bit!)<br><br>
                                  </p>
                                  <video height=640px; controls>
                                     <source src="assets/lab1/temp.mp4" type=video/mp4>
                                  </video><br><br>
-                              <h4 style="text-align:left;font-weight: bold;">Example IV: Microphone</b></h4>
+                              <h4 style="text-align:left;font-weight: bold;">Example IV: Microphone</h4>
                                  <p style="text-align: left;padding: 0px 30px;">
-                                 The last part of this lab is to test the microphone on the Artemis board. A microphone testing example program
-                                 is provided to print out the strongest audio signal in the frequency spectrum. The program will sample from the
-                                 microphone, perform a fast Fourier transform(FFT), and then pick out the signal with the highest intensity. <br><br>
-                                 For the 5000-level task, the program should also behave as an electronic tuner, that responds to musical "A" notes. 
-                                 Specifically, my program would respond to "A" notes in different octaves(A1 to A8), but due to environmental noise 
-                                 I could only demonstrate some of them (A4, A5, A6). In addition, I found out that the program will freeze entirely 
-                                 when a delay function is used to toggle the LED. To solve that, I implemented a non-blocking LED blinking mechanism 
-                                 by reading time from the internal clock, so that the program would simply check if the LED should be toggled during 
-                                 every iteration in the main loop.<br>
-                                 <br>
+                                    The last part of this lab is to test the microphone on the Artemis board. A microphone testing example program
+                                    is provided to print out the strongest audio signal in the frequency spectrum. The program will sample from the
+                                    microphone, perform a fast Fourier transform(FFT), and then pick out the signal with the highest intensity. <br><br>
+                                    For the 5000-level task, the program should also behave as an electronic tuner, that responds to musical "A" notes. 
+                                    Specifically, my program would respond to "A" notes in different octaves(A1 to A8), but due to environmental noise 
+                                    I could only demonstrate some of them (A4, A5, A6). In addition, I found out that the program will freeze entirely 
+                                    when a delay function is used to toggle the LED. To solve that, I implemented a non-blocking LED blinking mechanism 
+                                    by reading time from the internal clock, so that the program would simply check if the LED should be toggled during 
+                                    every iteration in the main loop.<br><br>
                                  </p>
                                  <video height=640px; controls>
                                     <source src="assets/lab1/mic.mp4" type=video/mp4>
@@ -177,48 +174,87 @@ if (currentMillis - previousMillis >= interval) {
                              <details>
                              <summary style="text-align:left;font-weight: bold; color:#fc4311;font-size: 24px;text-decoration:underline;">Lab 2: BLE</summary>
 <!--                              <h3 style="text-align:left;font-weight: bold; color:#fc4311;">Lab 2</h3> -->
-                             <h4 style="text-align:left;font-weight: bold;"><br>Introduction</b></h4>
+                             <h4 style="text-align:left;font-weight: bold;"><br>Introduction</h4>
                                  <p style="text-align: left;padding: 0px 30px;">
-                                 This lab includes various tasks related to the use of bluetooth to establish connection between the Artemis 
-                                 board and our computer. On the Artemis side, we would need to modify the .ino files in order to implement 
-                                 customized commands which can be processed on board. On the pc side, we need to design software handlers which 
-                                 processes different kinds of information sent back from the artemis board, extracts useful information, and 
-                                 formats output. After implementing and testing various functions/commands, we will also test the efficiency 
-                                 and reliability of data transmission by sending data packets of various sizes. (5000-level assignment)
+                                    This lab includes various tasks related to the use of bluetooth to establish connection between the Artemis 
+                                    board and our computer. On the Artemis side, we would need to modify the .ino files in order to implement 
+                                    customized commands which can be processed on board. On the pc side, we need to design software handlers which 
+                                    processes different kinds of information sent back from the artemis board, extracts useful information, and 
+                                    formats output. After implementing and testing various functions/commands, we will also test the efficiency 
+                                    and reliability of data transmission by sending data packets of various sizes. (5000-level assignment)
                                  </p>
                                  <img class="img-rounded" src="assets/lab2/BLE.png" alt="BLE image" style="width:20%; text-align: center;"><br>
-                              <h4 style="text-align:left;font-weight: bold;">Prelab</b></h4>
+                              <h4 style="text-align:left;font-weight: bold;">Prelab</h4>
                                  <p style="text-align: left;padding: 0px 30px;">
-                                 Before starting to work on any of the lab tasks, we want to make sure we can establish a stable connection between 
-                                 the BLE device and our PC. First we want to copy the hardware MAC address of our device, and generate a unique 
-                                 identifier to be placed in a configuration file. Change the first two lines in the following file:
+                                    Before starting to work on any of the lab tasks, we want to make sure we can establish a stable connection between 
+                                    the BLE device and our PC. First we want to copy the hardware MAC address of our device, and generate a unique 
+                                    identifier to be placed in a configuration file. Change the first two lines in the following file:
                                  </p>
                                  <br><br>
-                                 <img class="img-rounded" src="assets/lab2/settings.png" alt="settings image" style="width:60%; text-align: center;"><br>
+                                 <img class="img-rounded" src="assets/lab2/settings.png" alt="settings image" style="width:50%;"><br>
+                                 <figcaption style="font-size: 16px;"><em>connection settings on PC</em></figcaption>
                                  <br><br>
                                  <p style="text-align: left;padding: 0px 30px;">
-                                 Then we will be ready for the connection! After establishing the connection, the Artemis side and the PC side will 
-                                 work together to transmit/receive information. How a typical task will be done is: <br><br>
-                                 1. PC sends command to Artemis<br>
-                                 2. Artemis receives command and does some processing<br>
-                                 3. Artemis send data back to PC<br>
-                                 4. PC process or display data<br>
+                                    Then we will be ready for the connection! After establishing the connection, the Artemis side and the PC side will 
+                                    work together to transmit/receive information. How a typical task will be done is: <br><br>
+                                    1. PC sends command to Artemis<br>
+                                    2. Artemis receives command and does some processing<br>
+                                    3. Artemis send data back to PC<br>
+                                    4. PC process or display data<br>
                                  </p>
-                              <h4 style="text-align:left;font-weight: bold;"><br>Jupyter Notebook</b></h4>
+                              <h4 style="text-align:left;font-weight: bold;"><br>Jupyter Notebook</h4>
                                  <p style="text-align: left;padding: 0px 30px;">
                                  placeholder for notebook link
                                  </p>
-                              <h4 style="text-align:left;font-weight: bold;"><br>Task 1: Echo Command</b></h4>
+                              <h4 style="text-align:left;font-weight: bold;"><br>Task 1: Echo Command</h4>
                                  <p style="text-align: left;padding: 0px 30px;">
-                                 Echo command simply lets Artemis echo back a message from the PC. We first send an echo command with a string payload 
-                                 to Artemis. After receiving the string, Artemis replies back the same string to the PC. On the PC side, we woud need to 
-                                 call a function to receive such string and print it to the console.
+                                    Echo command simply lets Artemis echo back a message from the PC. We first need to send an echo command with a payload string 
+                                    to Artemis. After receiving the string, Artemis replies back the same string to the PC. While on the PC side, we woud need to 
+                                    call a function to receive such string and print it to the console. <br><br>
+                                    In the below output, we want to first verify that the Artemis board was successfully connected to our PC by confirming the mac 
+                                    address and a 'PONG' reply to our PING command. After that, we send a 'hi' to the Artemis board, and confirmed an echo message 
+                                    both on the Artemis board and on the PC console.<br><br>
                                  </p>
-
+                                 <div class="row" style="text-align: center;">
+                                   <div class="column2">
+                                     <img src="assets/lab2/step1_nano.png" alt="s1nano" style="width:80%">
+                                     <figcaption style="font-size: 16px;"><em>serial output from Artemis</em></figcaption>
+                                   </div>
+                                   <div class="column2">
+                                     <img src="assets/lab2/step1_pc.png" alt="s1pc" style="width:100%">
+                                     <figcaption style="font-size: 16px;"><em>sending and receiving data on PC</em></figcaption>
+                                   </div>
+                                 </div>
+                              <h4 style="text-align:left;font-weight: bold;"><br>Task 2: Get Time</h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    For the second task, we want to implement a command <em>GET_TIME_MILLIS</em> which lets the Artemis read the current time from 
+                                    its clock on board (miliseconds since boot up) and send that number back to the PC as a string. We frist want to do it without 
+                                    any function handlers, meaning that we will manually send and receive the string to verify it working properly.<br><br>
+                                    <b>On the Artemis side</b>, we need to implement a function to format the current time into a string for transmission. The code snippet 
+                                    for such function is attatched below to the left. After sending the command from the PC, we could also verify the string via the 
+                                    serial interface (screenshot on the lower right).
+                                    <br><br>
+                                 <div class="row" style="text-align: center;">
+                                   <div class="column2">
+                                     <img src="assets/lab2/step2_nano_code.png" alt="s2nanocode" style="width:100%">
+                                     <figcaption style="font-size: 16px;"><em>code snippet of GET_TIME_MILLIS on Artemis</em></figcaption>
+                                   </div>
+                                   <div class="column2">
+                                     <img src="assets/lab2/step2_nano.png" alt="s2nano" style="width:60%">
+                                     <figcaption style="font-size: 16px;"><em>serial output from Artemis</em></figcaption>
+                                   </div>
+                                 </div>
                                  <br><br>
+
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    <b>On the PC side</b>, we would need to send the command we just created, and then manually receive the time string with a receive_string 
+                                    command. We could automate this process in the subsequent steps.
+                                    <br><br>
+                                 <img class="img-rounded" src="assets/lab2/step2_pc.png" alt="step2pc" style="width:60%";><br>
+                                 <figcaption style="font-size: 16px;"><em>sending and receiving time string on PC</em></figcaption>
+
                                  </p>
 
-                                 
                               </details>
 
 

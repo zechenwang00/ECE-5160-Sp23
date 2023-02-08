@@ -130,13 +130,9 @@ button:focus {
 ul,
 li,
 ol {
-  display: block;
-  list-style-type: decimal;
-  margin-top: 1em;
-  margin-bottom: 1em;
-  margin-left: 0;
-  margin-right: 0;
-  padding-left: 40px;
+	margin: 0px;
+	padding: 0px;
+	list-style: none;
 }
 
 p {
@@ -2223,3 +2219,18 @@ pre code {
   text-align: left;
 }
 
+.column2 {
+  float: left;
+  width: 50%;
+  padding: 5px;
+}
+
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+b {
+  font-weight: bold;
+}
