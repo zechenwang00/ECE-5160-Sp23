@@ -192,6 +192,7 @@ handle_command()
               tx_estring_value.append("C:" );              
               tx_estring_value.append(temp_f);
               tx_estring_value.append("|");
+              delay(1000);
             }            
             tx_characteristic_string.writeValue(tx_estring_value.c_str());
             
