@@ -54,7 +54,7 @@
                      <div class="limit-box">
                         <nav class="main-menu">
                            <ul class="menu-area-main">
-                              <li class="active"> <a href="index.html">Home</a> </li>
+                              <li class="active"> <a href="#">Home</a> </li>
                               <li> <a href="#about">About</a> </li>
                               <li> <a href="#labs">Lab Reports</a> </li>
                               <li> <a href="#pics">Gallery</a> </li>
@@ -329,7 +329,58 @@ if (currentMillis - previousMillis >= interval) {
                                      <figcaption style="font-size: 16px;"><em>processed output - 2</em></figcaption>
                                    </div>
                                  </div>                             
+                              <h4 style="text-align:left;font-weight: bold;"><br><u>Task 6: Limitations</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                 The Artemis board has 384 kB (384,000 bytes) RAM, which is quite limited for data processing if we are always dealing with long strings of data.
+                                 Assuming that 100% of the RAM are available for our use, and we are sampling 16-bit (2 bytes) data at a rate of 150Hz for 5 seconds during each interval.
+                                 We would generate data size of 2 * 150 * 5 = 1500 Bytes for every interval, which is 1/256 of our total RAM.<br><br>
+                                 <b>In other words, we would be able to collect and store 256 groups of such data in the RAM, which is equivalent to 1280 seconds of data collection
+                                 before running out of memory.</b>
+                                 </p>
                                  <br>
+                              <h4 style="text-align:left;font-weight: bold;"><br><u>Extra Task 1: Effective Data Rate</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                 We could calculate the data rate by sending and receiving data with various sizes. For my implementation, I simply used the ECHO command to send strings 
+                                 of sizes from 1 to 120 characters. The effective data rate will be calculated by (transmission time - received time) / 2 * data size. Code snippet and 
+                                 visualization of the calculated data will be included below:
+                                 </p>
+                                 <br>                                 
+                                 <div class="row" style="text-align: center;">
+                                   <div class="column2">
+                                     <img src="assets/lab2/E1_1.png" alt="e11" style="width:100%">
+                                     <figcaption style="font-size: 16px;"><em>Code for data collection</em></figcaption>
+                                   </div>
+                                   <div class="column2">
+                                     <img src="assets/lab2/E1_2.png" alt="e12" style="width:100%">
+                                     <figcaption style="font-size: 16px;"><em>visualization of results</em></figcaption>
+                                   </div>
+                                 </div>
+                                 <br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                  One point I found important is that, in order for the callback function to correctly document data transmission time, we need to append transmission and 
+                                  receiving time in lists and calculate the difference later. If we were to use a shared global variable for time calculation, it may be difficult to 
+                                  ensure that every timestamp being read in the callback function corresponds to the message's respective transmission time.<br><br>
+                                  My observation is that the transmission time is independent from string size. Maybe smaller packets have larger overheads relative to its acutal payload
+                                  size, and larger packets have smaller portions of overhead. The conclusion is that sending larger packets will yield larger effective data rate.
+                                 </p>
+                                 <br>
+                              <h4 style="text-align:left;font-weight: bold;"><br><u>Extra Task 2: Reliability</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                 Reliability is assessed by rapidly sending packets from Artemis and trying to receive them on the PC side. By manually setting the delay interval to 0 in 
+                                 the arduino code, we could try to send 1000 packets as fast as we can. From the following screenshot, we can confirm 100% reliability since all packets has 
+                                 been received.
+                                 </p>
+                                 <br>
+                                 <div class="row" style="text-align: center;">
+                                   <div class="column2">
+                                     <img src="assets/lab2/E2_code.png" alt="e2code" style="width:100%">
+                                     <figcaption style="font-size: 16px;"><em>Code for sending 1k packets</em></figcaption>
+                                   </div>
+                                   <div class="column2">
+                                     <img src="assets/lab2/E2.png" alt="e2" style="width:100%">
+                                     <figcaption style="font-size: 16px;"><em>reliability calculation</em></figcaption>
+                                   </div>
+                                 </div>    
 
                               </details>
 
