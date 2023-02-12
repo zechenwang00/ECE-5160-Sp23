@@ -50,7 +50,7 @@ class BLEAsyncDevice():
         return OS_PLATFORM
     
     async def _get_ble_device(self, timeout=10.0):
-        if True:
+        if IS_ATLEAST_MAC_OS_12:
             device = None
             async with BleakScanner(service_uuids=[self.service_uuid]) as scanner:
                 start_time = time.time()
