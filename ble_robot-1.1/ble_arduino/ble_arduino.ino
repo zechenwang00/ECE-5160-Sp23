@@ -233,10 +233,17 @@ handle_command()
 
         case SEND_NONSTOP_1k:
           {
+            char char_arr[MAX_MSG_SIZE];
+
+            // Extract the next value from the command string as a character array
+            success = robot_cmd.get_next_value(char_arr);
+            if (!success)
+                return;
+
             int idx = 0;
             for (int i = 0; i < 1000; i++) {
               tx_estring_value.clear();
-              tx_estring_value.append(idx);
+              tx_estring_value.append(char_arr);
               tx_characteristic_string.writeValue(tx_estring_value.c_str());
               Serial.print("Sent back: ");
               Serial.println(tx_estring_value.c_str());     

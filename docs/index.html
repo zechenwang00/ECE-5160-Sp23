@@ -360,8 +360,8 @@ if (currentMillis - previousMillis >= interval) {
                                   One point I found important is that, in order for the callback function to correctly document data transmission time, we need to append transmission and 
                                   receiving time in lists and calculate the difference later. If we were to use a shared global variable for time calculation, it may be difficult to 
                                   ensure that every timestamp being read in the callback function corresponds to the message's respective transmission time.<br><br>
-                                  My observation is that the transmission time is independent from string size. Maybe smaller packets have larger overheads relative to its acutal payload
-                                  size, and larger packets have smaller portions of overhead. The conclusion is that sending larger packets will yield larger effective data rate.
+                                  My observation is that the transmission time is independent from string size: no matter what size of data we transmit, latency is always about the same. 
+                                  Maybe smaller packets have larger overheads relative to its acutal payload size, and larger packets have smaller portions of overhead. My conclusion is that sending larger packets will yield larger effective data rate.
                                  </p>
                                  <br>
                               <h4 style="text-align:left;font-weight: bold;"><br><u>Extra Task 2: Reliability</u></h4>
