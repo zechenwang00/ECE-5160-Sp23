@@ -384,6 +384,97 @@ if (currentMillis - previousMillis >= interval) {
 
                               </details>
 
+                              <details>
+                              <summary style="text-align:left;font-weight: bold; color:#fc4311;font-size: 24px;text-decoration:underline;">Lab 3: Bluetooth</summary>
+                                 <h4 style="text-align:left;font-weight: bold;"><br><u>Introduction</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    This lab assignment require students to complete a set of hardware and software related tasks. We would first connect the TOF sensors to our Artemis Nano
+                                    board, confirm using example codes, and then write our own programs for data collection. With these tasks completed, we will be more prepared for any 
+                                    future tasks that require I2C sensor connections and data transmission via bluetooth.
+                                 </p>
+                                 <br>
+                              <h4 style="text-align:left;font-weight: bold;"><br><u>Prelab</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    As included in the datasheet and in the header file <em>SparkFun_VL53L1X.h</em>, the default I2C address of the TOF sensors we are using is <b>0x52</b>.
+                                    Using this address wouldn't cause any problem when there is only one such TOF device connected to our system. However, if we want to use multiple TOF 
+                                    sensors, or in the future, integrate more sensors into our system, we would need to manually change their I2C address to avoid conflict. Since the I2C 
+                                    protocol specifies that the master will communicate to the slave devices using their respecive addresses, we want to set each of the I2C device's address
+                                    to an arbitrary and fixed address. <br><br>
+                                    My approach of solving the I2C conflict between two TOF sensors is to manually disable one of them using the XSHUT pin, change the second one's address, 
+                                    and enable the first sensor again. That way my <em>setI2Caddress</em> function will only affect one of the sensors. <br><br>
+                                    For the placement of sensors, since we only have two TOF sensors. I would like to place one facing the front, and the other facing the left side. Still, 
+                                    in cases where an obstacle appears to the right or to the back, we would not be able to detect it. Also for angles around 45 degrees and near the front, I
+                                    am uncertain if the two sensors will be able to detect obstacles.
+                                 </p>
+                                 <br>
+                                 <img class="img-rounded" src="images/penguin.jpg" alt="diagram" style="width:30%";><br>
+                                 <figcaption style="font-size: 16px;"><em>diagram placeholder</em></figcaption>
+                                 <br>
+
+                              <h4 style="text-align:left;font-weight: bold;"><br><u>Task 1: Connecting Hardware</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    Connection and scanning for address. 
+                                 </p>
+                                 <img class="img-rounded" src="assets/lab3/i2c_addr.png" alt="i2c_addr" style="width:50%";><br>
+                                 <figcaption style="font-size: 16px;"><em>I2C address</em></figcaption>
+                                 <br>
+
+                              <h4 style="text-align:left;font-weight: bold;"><br><u>Task 2: Sampling from TOF</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    Placeholder
+                                 </p>
+                                 <br>
+
+
+                              <h4 style="text-align:left;font-weight: bold;"><br><u>Task 3: Connecting Multiple Sensors</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    Placeholder
+                                 </p>
+                                 <br>
+                                 <img class="img-rounded" src="assets/lab3/multi.png" alt="multi" style="width:20%";><br>
+                                 <figcaption style="font-size: 16px;"><em>Artemis output for two TOF sensors</em></figcaption>
+                                 <br>
+                                 <div class="row" style="text-align: center;">
+                                   <div class="column2">
+                                     <img src="assets/lab3/multi_setup.png" alt="multisetup" style="width:80%">
+                                     <figcaption style="font-size: 16px;"><em>Two sensor setup code</em></figcaption>
+                                   </div>
+                                   <div class="column2">
+                                     <img src="assets/lab3/multi_code.png" alt="multicode" style="width:100%">
+                                     <figcaption style="font-size: 16px;"><em>Two sensor sampling code</em></figcaption>
+                                   </div>
+                                 </div>   
+
+                              <h4 style="text-align:left;font-weight: bold;"><br><u>Task 4: Data Transmission via Bluetooth</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    Placeholder
+                                 </p>
+                                 <br>
+                                 <img class="img-rounded" src="assets/lab3/multi_BLE_code.png" alt="multiBLE" style="width:40%";><br>
+                                 <figcaption style="font-size: 16px;"><em>receiving and processing data on PC</em></figcaption>
+                                 <br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    Placeholder
+                                 </p>
+                                 <div class="row" style="text-align: center;">
+                                   <div class="column2">
+                                     <img src="assets/lab3/multi_BLE_nano.png" alt="multiBLEnano" style="width:60%">
+                                     <figcaption style="font-size: 16px;"><em>Artemis output with timestamp</em></figcaption>
+                                   </div>
+                                   <div class="column2">
+                                     <img src="assets/lab3/multi_BLE_nano_code.png" alt="multiBLEnanocode" style="width:100%">
+                                     <figcaption style="font-size: 16px;"><em>Artemis code snippet</em></figcaption>
+                                   </div>
+                                 </div>   
+
+                              <h4 style="text-align:left;font-weight: bold;"><br><u>Task 5: Discussion of Envrionmental Factors</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    Placeholder
+                                 </p>
+                                 <br>
+
+                             </details>
+
 
 <!--                          <img class="img-rounded" src="images/penguin.jpg" alt="Generic placeholder image" style="width:20%; text-align: center;"><br>
                               <p>Placeholder image</p> -->
