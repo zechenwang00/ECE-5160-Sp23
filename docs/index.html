@@ -407,32 +407,71 @@ if (currentMillis - previousMillis >= interval) {
                                     am uncertain if the two sensors will be able to detect obstacles.
                                  </p>
                                  <br>
-                                 <img class="img-rounded" src="images/penguin.jpg" alt="diagram" style="width:30%";><br>
-                                 <figcaption style="font-size: 16px;"><em>diagram placeholder</em></figcaption>
+                                 <img class="img-rounded" src="assets/lab3/schematic.jpg" alt="schematic" style="width:30%";><br>
+                                 <figcaption style="font-size: 16px;"><em>hardware connections schematic</em></figcaption>
                                  <br>
 
                               <h4 style="text-align:left;font-weight: bold;"><br><u>Task 1: Connecting Hardware</u></h4>
                                  <p style="text-align: left;padding: 0px 30px;">
-                                    Connection and scanning for address. 
+                                    The following picture demonstrate the actual hardware setup of my system, followed by a screenshot showing a I2C address scan on Artemis.
                                  </p>
-                                 <img class="img-rounded" src="assets/lab3/i2c_addr.png" alt="i2c_addr" style="width:50%";><br>
+                                 <br>
+                                 <img class="img-rounded" src="assets/lab3/hw_connection.jpg" alt="hw" style="width:40%";><br>
+                                 <figcaption style="font-size: 16px;"><em>hardware connection</em></figcaption>
+                                 <br>
+                                 <img class="img-rounded" src="assets/lab3/i2c_addr.png" alt="i2c_addr" style="width:40%";><br>
                                  <figcaption style="font-size: 16px;"><em>I2C address</em></figcaption>
+                                 <br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    We could see from the above serial message that there are two devices detected. By manually disconnecting the hardware components, I found out 
+                                    that the 0x69 device is the IMU, and the 0x29 device is the TOF sensor.<br><br>This is a very interesting result, since the TOF sensor, by default 
+                                    should have an address of 0x52. Looking into the bitwise representations of each address, we could find out that 0x29 is 0010_1001, while 0x52 0101_0010. 
+                                    Looks like the address scanning example ignored the 0 at LSB, and consequently right shifted the address by 1 bit. Furthermore, we can't be sure if the 
+                                    IMU actually has the address 0x69 or (0x69 << 1) = 0xD2.
+                                 </p>
                                  <br>
 
                               <h4 style="text-align:left;font-weight: bold;"><br><u>Task 2: Sampling from TOF</u></h4>
                                  <p style="text-align: left;padding: 0px 30px;">
-                                    Placeholder
+                                    The three modes provided are short, medium, and long distance mode. According to the VL53L1X datasheet, the short mode is more immune to ambience light,
+                                    which will have better performance in noisy or unpredictable envrionments. Since we may suffer more from ambience light conditions as we increase the 
+                                    maximum distance, and 1.3m should be quite enough for detecting obstacles/walls, I would like to choose the short distance mode. Following is a 
+                                    demonstration of how testing data was acquired, and a visualizaiton of such data using the short distance mode. 
+
                                  </p>
                                  <br>
+                                 <div class="row" style="text-align: center;">
+                                   <div class="column2">
+                                     <img src="assets/lab3/measurement_setup.jpg" alt="measuresetup" style="width:80%">
+                                     <figcaption style="font-size: 16px;"><em>measurement setup</em></figcaption>
+                                   </div>
+                                   <div class="column2">
+                                     <img src="assets/lab3/measure.png" alt="measure" style="width:86%">
+                                     <figcaption style="font-size: 16px;"><em>visualization of data</em></figcaption>
+                                   </div>
+                                 </div>
+                                 <br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    In this setup, the TOF sensor was temporarily attatched to a surface to make sure it is perpendicular to the ground. It was elevated from ground 
+                                    during data collection so that it was less likely to be affected by surface reflections from the desk. After repeating collection at various distance, 
+                                    I collected a group of ~10 data points and visualized it using matplotlib. We could see from the plot that the measured distances was closer to the 
+                                    actual distances for smaller values (<400), and start to have slightly larger errors for values > 400. <br><br>
+                                    Overall, the errors are within a 10% margin, and could be negligible depending on what task we are doing. There could also be systematic errors caused
+                                    by my experiment setup which led to such error margin. In conclusion, I would say the short distance mode TOF would be reliable enough for my future labs.
+
+                                 </p>
+                                 <br>  
 
 
                               <h4 style="text-align:left;font-weight: bold;"><br><u>Task 3: Connecting Multiple Sensors</u></h4>
                                  <p style="text-align: left;padding: 0px 30px;">
-                                    Placeholder
+                                    First, we would like to slightly modify the provided example code to let it support multiple sensors. The major task here is to manually set a different
+                                    I2C address for one of the TOF sensors, otherwise two of them would be sending/receiving at the same time. The sensor setup code to the left includes how 
+                                    the address change was done: send a LOW signal to XSHUT on TOF1 to disable it --> set new address for TOF2 --> send a HIGH signal to XSHUT on TOF1 to 
+                                    enable it. <br><br>
+                                    The sampling code to the right shows how sampling was done for multiple sensors. We would like to make sure both sensors have data ready before actually 
+                                    fetching them. So we would loop and check data availability while printing out time information. (that way we don't simply leave it waiting!)
                                  </p>
-                                 <br>
-                                 <img class="img-rounded" src="assets/lab3/multi.png" alt="multi" style="width:20%";><br>
-                                 <figcaption style="font-size: 16px;"><em>Artemis output for two TOF sensors</em></figcaption>
                                  <br>
                                  <div class="row" style="text-align: center;">
                                    <div class="column2">
@@ -443,19 +482,61 @@ if (currentMillis - previousMillis >= interval) {
                                      <img src="assets/lab3/multi_code.png" alt="multicode" style="width:100%">
                                      <figcaption style="font-size: 16px;"><em>Two sensor sampling code</em></figcaption>
                                    </div>
-                                 </div>   
+                                 </div>
+                                 <br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    Following are the outputs from Artemis, one with time info printed to serial and the other doesn't. We could use the time information to determine how
+                                    long it took for Artemis to do different tasks. When Artemis is simply waiting for data, time is being printed to serial evey 1 milisecond. We can observe
+                                    a ~10 ms delay before and after each sensor output, suggesting that data collection, sending control signals, and formatting output roughly takes 
+                                    10 ms. The interval between each group of data is around 55ms.<br><br>
+                                    In other words, if data is always available, we would be able to see each group of output at around 18Hz. The inter-measurement period may also be reduced 
+                                    by using its API. According to the documentation, it could theoretically sample as fast as every 20ms, which ups the sampling rate to 50Hz.
+                                 </p>
+                                 <br>
+                                 <div class="row" style="text-align: center;">
+                                   <div class="column2">
+                                    <img class="img-rounded" src="assets/lab3/multi_w_time.png" alt="multiwtime" style="width:40%";><br>
+                                    <figcaption style="font-size: 16px;"><em>Artemis output for two TOF sensors with timestamps</em></figcaption>
+                                   </div>
+                                   <div class="column2">
+                                    <img class="img-rounded" src="assets/lab3/multi.png" alt="multi" style="width:60%";><br>
+                                    <figcaption style="font-size: 16px;"><em>Artemis output for two TOF sensors</em></figcaption>
+                                   </div>
+                                 </div>
+
+                                 <br>
 
                               <h4 style="text-align:left;font-weight: bold;"><br><u>Task 4: Data Transmission via Bluetooth</u></h4>
                                  <p style="text-align: left;padding: 0px 30px;">
-                                    Placeholder
+                                    This section describes how data is transmitted from Artemis to PC via Bluetooth and then processed. Starting from the results on PC, we can see 
+                                    on the left that we are reusing some code pieces from lab 2. Using a callback function for interpreting the timestamps and TOF readings, we simply 
+                                    need to request TOF data multiple(50) times to collect enough data for visualization. On the right, we simply use matplotlib to plot both TOF readings 
+                                    respective to time. The data was collected when I was moving hands in front of both sensors, so we can see that both readings are changing in similar 
+                                    patterns.
                                  </p>
-                                 <br>
-                                 <img class="img-rounded" src="assets/lab3/multi_BLE_code.png" alt="multiBLE" style="width:40%";><br>
-                                 <figcaption style="font-size: 16px;"><em>receiving and processing data on PC</em></figcaption>
                                  <br>
                                  <p style="text-align: left;padding: 0px 30px;">
-                                    Placeholder
+                                    <a href="assets/lab3/zechen_lab3.ipynb" download target="_blank" style="color:blue"><u>click to download jupyter notebook</u></a>
                                  </p>
+                                 <br>
+                                 <div class="row" style="text-align: center;">
+                                   <div class="column2">
+                                    <img class="img-rounded" src="assets/lab3/multi_BLE_code.png" alt="multiBLE" style="width:80%";><br>
+                                    <figcaption style="font-size: 16px;"><em>receiving and processing data on PC</em></figcaption>
+                                   </div>
+                                   <div class="column2">
+                                    <img class="img-rounded" src="assets/lab3/multi_BLE_plot.png" alt="multiBLEplot" style="width:100%";><br>
+                                    <figcaption style="font-size: 16px;"><em>receiving and processing data on PC</em></figcaption>
+                                   </div>
+                                 </div>   
+                                 <br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    Then we can proceed to see how the code was implemented on the Artemis side. The left screenshot is the serial output from Artemis, showing that it 
+                                    is sending one string at a time encoding a timestamp and two TOF readings. To the right, we can find similar content compared to previous sections, 
+                                    the difference is that, after reading data, we not only print them to serial, but also transmit them via BLE connection. There are also BLE configurations
+                                    that need to be done before transmission -- those are similar to lab2 tasks and could be referenced from there.
+                                 </p>
+                                 <br>
                                  <div class="row" style="text-align: center;">
                                    <div class="column2">
                                      <img src="assets/lab3/multi_BLE_nano.png" alt="multiBLEnano" style="width:60%">
