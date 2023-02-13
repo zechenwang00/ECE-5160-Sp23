@@ -489,8 +489,8 @@ if (currentMillis - previousMillis >= interval) {
                                     long it took for Artemis to do different tasks. When Artemis is simply waiting for data, time is being printed to serial evey 1 milisecond. We can observe
                                     a ~10 ms delay before and after each sensor output, suggesting that data collection, sending control signals, and formatting output roughly takes 
                                     10 ms. The interval between each group of data is around 55ms.<br><br>
-                                    In other words, if data is always available, we would be able to see each group of output at around 18Hz. The inter-measurement period may also be reduced 
-                                    by using its API. According to the documentation, it could theoretically sample as fast as every 20ms, which ups the sampling rate to 50Hz.
+                                    In other words, we would be able to see each group of output at a rate around 18Hz. The inter-measurement period may also be reduced by using its API. 
+                                    According to the documentation, it could theoretically sample as fast as every 20ms, which ups the sampling rate to 50Hz.
                                  </p>
                                  <br>
                                  <div class="row" style="text-align: center;">
