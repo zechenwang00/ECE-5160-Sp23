@@ -548,11 +548,50 @@ if (currentMillis - previousMillis >= interval) {
                                    </div>
                                  </div>   
 
-                              <h4 style="text-align:left;font-weight: bold;"><br><u>Task 5: Discussion of Envrionmental Factors</u></h4>
+                              <h4 style="text-align:left;font-weight: bold;"><br><u>Task 5: Discussion</u></h4>
                                  <p style="text-align: left;padding: 0px 30px;">
-                                    Placeholder
+                                    <b>Sensor Type</b><br>
+                                    Infrared-based distance sensors almost all relies on a pair of emitter and receiver. The emitter could be as simple as a LED that is able to emit IR 
+                                    waves, which are invisible to human eyes. The receiver could be a photodiode which is sensitive to a particular range of wavelengths which includes the 
+                                    emitter's wavelength. After the emitted IR wave reached an object, it will be reflected back to the emitter if it is within the effective range. Upon
+                                    receiving the reflected wave, the receiver's resistance and output voltage will change accordingly. By detecting this change, we would know if there 
+                                    is an object within detection range. If we further record the time of transmitting and receiving the wave, we could deduce our distance from the object 
+                                    since light waves travel at a constant speed in air. <br><br>
+                                    There are many limitations for IR sensors, such as it would be difficult to detect objects in long range, since the reflection angle need to be strictly small for the receiver to capture the signal. Longer ranges also mean more disturbances and envrionmental noises that could make signal detection much 
+                                    more difficult. The surface material of our object of interest may also be a concern -- if we are dealing with objects such as mirrors they will have 
+                                    specular reflections rather than diffuse reflections. In other words, the light ray will reflect at its exact incident angle. Without surface scattering,
+                                    it is very likely that our receivers do not hear back anything from the surface.
                                  </p>
                                  <br>
+                                 <img class="img-rounded" src="assets/lab3/reflection.jpg" alt="ref" style="width:50%";><br>
+                                 <figcaption style="font-size: 16px;"><em>specular and diffuse reflections</em></figcaption>
+                                 <br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    Some alternatives to IR TOF sensors include LiDAR(Light Detection and Ranging). LiDAR emits laser beams instead of light waves, which is less likely to 
+                                    be affected by envrionmental disturbances. Lasers can also travel further reliably, and can be used to construct 3D point models with multiple laser 
+                                    beams pointing towards the target. However, LiDAR sensors do come with a much greater cost, and usually a much bigger size as well. If we want to have 
+                                    somthing portable, TOF sensors is still a better option.
+                                 </p>
+                                 <br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    <b>Sensitivity</b><br>
+                                    TOF sensors should be minimally affected by surface color, since the surface color would not change the properties of light waves being reflected back 
+                                    to the receiver. Following are some data collected from our TOF sensors reading object of different colors:
+                                 </p>
+                                 <br>
+                                 <img class="img-rounded" src="assets/lab3/colors.png" alt="color" style="width:50%";><br>
+                                 <figcaption style="font-size: 16px;"><em>TOF readings on different colors</em></figcaption>
+                                 <br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    From what I can tell, there is no significant difference between surfaces of different colors. The readings are all within a reasonable error range and 
+                                    have no significant offset for a particular color.
+                                 </p>
+                                 <br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    For different materials, I only tested on rough surfaces such as a tissue paper box and smooth surfaces such as mirrors. I observed that TOF sensors
+                                    behave normally on rough surfaces, but cannot get back readings when pointing towards smooth surfaces. As discussed before, this may be a result of 
+                                    the specular reflection that the emitted light wave is not reflected back to the receiver.
+                                 </p>
 
                              </details>
 
