@@ -1,0 +1,191 @@
+Pitch:-067.0|Roll: 023.6
+Pitch:-067.5|Roll: 020.3
+Pitch:-066.8|Roll: 011.3
+Pitch:-080.9|Roll:-013.8
+Pitch:-084.8|Roll:-030.2
+Pitch:-087.9|Roll:-058.7
+Pitch:-092.3|Roll:-110.6
+Pitch:-092.5|Roll:-111.9
+Pitch:-076.9|Roll:-006.8
+Pitch:-086.1|Roll:-025.2
+Pitch:-085.2|Roll: 033.5
+Pitch:-074.8|Roll: 046.6
+Pitch:-079.9|Roll: 039.7
+Pitch:-076.8|Roll: 033.4
+Pitch:-073.9|Roll: 048.2
+Pitch:-072.2|Roll: 066.1
+Pitch:-105.1|Roll: 109.3
+Pitch:-025.4|Roll: 008.7
+Pitch:-015.3|Roll:-002.8
+Pitch:-007.7|Roll: 018.2
+Pitch: 000.3|Roll: 007.7
+Pitch: 008.7|Roll: 010.7
+Pitch: 008.6|Roll: 002.6
+Pitch: 022.2|Roll: 007.7
+Pitch: 023.7|Roll: 012.0
+Pitch: 025.4|Roll: 004.1
+Pitch: 038.2|Roll: 001.1
+Pitch: 046.9|Roll:-006.5
+Pitch: 031.4|Roll: 003.4
+Pitch: 045.8|Roll:-005.4
+Pitch: 055.5|Roll:-011.4
+Pitch: 072.4|Roll:-044.5
+Pitch: 074.2|Roll:-043.9
+Pitch: 075.7|Roll:-032.7
+Pitch: 084.0|Roll:-073.6
+Pitch: 069.9|Roll:-055.2
+Pitch: 067.4|Roll:-040.4
+Pitch: 072.6|Roll:-046.0
+Pitch: 054.5|Roll:-022.3
+Pitch: 051.3|Roll:-026.3
+Pitch: 065.2|Roll:-018.8
+Pitch: 070.7|Roll:-050.8
+Pitch: 062.6|Roll:-005.9
+Pitch: 055.4|Roll:-019.7
+Pitch: 044.4|Roll:-029.5
+Pitch: 046.4|Roll:-012.3
+Pitch: 056.1|Roll: 012.1
+Pitch: 029.0|Roll: 004.8
+Pitch: 036.3|Roll:-031.8
+Pitch: 026.8|Roll:-007.2
+Pitch: 020.8|Roll: 016.7
+Pitch: 033.4|Roll:-029.7
+Pitch: 009.0|Roll:-009.6
+Pitch: 025.8|Roll:-001.3
+Pitch: 020.6|Roll: 015.3
+Pitch: 014.3|Roll: 0010.0
+Pitch: 015.3|Roll: 011.3
+Pitch: 019.4|Roll: 013.3
+Pitch: 016.3|Roll: 028.6
+Pitch: 016.8|Roll: 042.5
+Pitch: 021.5|Roll: 056.4
+Pitch: 006.5|Roll: 035.7
+Pitch: 048.7|Roll: 076.0
+Pitch: 037.2|Roll: 074.3
+Pitch: 015.6|Roll: 064.1
+Pitch: 059.5|Roll: 080.0
+Pitch: 082.2|Roll: 087.7
+Pitch: 108.5|Roll: 097.5
+Pitch: 124.5|Roll: 104.4
+Pitch: 124.6|Roll: 106.3
+Pitch: 145.9|Roll: 122.9
+Pitch: 131.0|Roll: 114.4
+Pitch: 138.9|Roll: 119.1
+Pitch: 135.9|Roll: 115.4
+Pitch: 127.4|Roll: 107.2
+Pitch: 132.6|Roll: 110.5
+Pitch: 128.5|Roll: 108.5
+Pitch: 112.5|Roll: 097.3
+Pitch: 082.7|Roll: 087.9
+Pitch: 057.4|Roll: 078.5
+Pitch: 041.5|Roll: 073.0
+Pitch: 017.5|Roll: 059.0
+Pitch: 019.4|Roll: 055.6
+Pitch: 017.5|Roll: 057.4
+Pitch: 007.5|Roll: 041.0
+Pitch: 008.3|Roll: 037.8
+Pitch:-005.1|Roll: 043.6
+Pitch: 003.0|Roll: 016.7
+Pitch: 008.7|Roll:-003.4
+Pitch:-009.0|Roll:-008.3
+Pitch: 010.2|Roll:-029.9
+Pitch: 012.6|Roll:-030.1
+Pitch: 017.6|Roll:-036.9
+Pitch: 017.6|Roll:-042.0
+Pitch: 028.0|Roll:-056.5
+Pitch: 032.5|Roll:-056.7
+Pitch: 035.9|Roll:-016.3
+Pitch: 025.8|Roll:-013.6
+Pitch: 010.7|Roll: 005.6
+Pitch: 007.0|Roll:-023.5
+Pitch: 003.8|Roll:-032.5
+Pitch: 011.9|Roll:-002.8
+Pitch: 013.0|Roll:-028.2
+Pitch: 015.7|Roll:-045.9
+Pitch:-003.1|Roll:-044.6
+Pitch: 027.6|Roll:-052.6
+Pitch: 000.9|Roll:-068.7
+Pitch: 026.3|Roll:-060.1
+Pitch: 031.7|Roll:-042.4
+Pitch: 030.9|Roll:-058.1
+Pitch: 031.6|Roll:-065.6
+Pitch: 095.6|Roll:-091.4
+Pitch: 111.4|Roll:-096.0
+Pitch: 057.5|Roll:-077.2
+Pitch: 080.1|Roll:-082.9
+Pitch: 052.7|Roll:-075.4
+Pitch: 120.8|Roll:-102.3
+Pitch: 095.7|Roll:-091.9
+Pitch: 124.3|Roll:-106.6
+Pitch: 124.0|Roll:-123.2
+Pitch:-012.1|Roll:-079.4
+Pitch: 136.7|Roll:-126.8
+Pitch: 124.2|Roll:-106.8
+Pitch:-022.5|Roll:-082.0
+Pitch: 128.2|Roll:-114.4
+Pitch: 124.5|Roll:-105.7
+Pitch: 083.5|Roll:-088.9
+Pitch: 025.9|Roll:-070.4
+Pitch: 043.7|Roll:-073.8
+Pitch: 097.6|Roll:-091.3
+Pitch: 024.4|Roll:-048.9
+Pitch: 011.3|Roll:-049.2
+Pitch: 016.4|Roll:-066.4
+Pitch: 025.0|Roll:-031.6
+Pitch: 018.8|Roll:-028.4
+Pitch: 027.1|Roll:-064.3
+Pitch: 016.6|Roll:-002.8
+Pitch: 012.4|Roll:-002.4
+Pitch: 026.0|Roll: 017.6
+Pitch: 025.7|Roll: 018.4
+Pitch: 032.5|Roll: 014.9
+Pitch: 011.0|Roll: 009.3
+Pitch:-091.0|Roll:-092.5
+Pitch: 071.0|Roll: 017.7
+Pitch: 135.4|Roll: 127.0
+Pitch: 018.5|Roll:-023.3
+Pitch: 000.0|Roll:-049.3
+Pitch:-006.5|Roll:-050.7
+Pitch: 002.3|Roll:-008.6
+Pitch: 003.6|Roll:-002.6
+Pitch:-005.5|Roll:-027.7
+Pitch:-002.0|Roll: 017.2
+Pitch:-014.3|Roll:-000.2
+Pitch: 007.1|Roll: 005.7
+Pitch: 008.3|Roll: 001.7
+Pitch: 007.9|Roll:-001.6
+Pitch: 002.5|Roll: 003.1
+Pitch: 010.9|Roll: 000.1
+Pitch: 005.2|Roll: 000.1
+Pitch:-005.0|Roll:-001.3
+Pitch: 009.8|Roll:-002.0
+Pitch: 007.5|Roll: 000.1
+Pitch: 006.9|Roll:-001.2
+Pitch: 007.2|Roll:-001.0
+Pitch: 008.1|Roll:-000.7
+Pitch: 008.9|Roll:-000.1
+Pitch: 008.9|Roll:-000.5
+Pitch: 008.5|Roll:-000.8
+Pitch: 008.5|Roll:-000.8
+Pitch: 008.8|Roll:-000.3
+Pitch: 008.1|Roll:-000.4
+Pitch: 008.4|Roll:-000.2
+Pitch: 008.4|Roll:-000.2
+Pitch: 007.8|Roll:-000.3
+Pitch: 008.4|Roll:-001.4
+Pitch: 011.6|Roll:-007.7
+Pitch: 0010.0|Roll:-001.9
+Pitch: 000.1|Roll: 000.3
+Pitch: 006.2|Roll:-000.4
+Pitch: 006.2|Roll:-000.3
+Pitch: 006.2|Roll:-000.8
+Pitch: 005.3|Roll: 000.1
+Pitch: 006.3|Roll:-000.3
+Pitch: 005.7|Roll:-000.4
+Pitch: 006.2|Roll: 000.0
+Pitch: 006.0|Roll: 000.0
+Pitch: 005.7|Roll:-000.1
+Pitch: 006.0|Roll:-000.7
+Pitch: 006.6|Roll: 001.8
+Pitch: 008.1|Roll:-000.6
+Pitch: 011.2|Roll:-003.6

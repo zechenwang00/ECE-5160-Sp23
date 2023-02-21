@@ -596,6 +596,173 @@ if (currentMillis - previousMillis >= interval) {
                              </details>
 
 
+                             <details>
+                              <summary style="text-align:left;font-weight: bold; color:#fc4311;font-size: 24px;text-decoration:underline;">Lab 4: IMU</summary>
+                              <h4 style="text-align:left;font-weight: bold;"><br><u>Introduction</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    The purpose of this lab is to connect and test the functionality of a 9-DoF IMU sensor, which we will be using in the future on our vehicle. We would 
+                                    be using the readings from IMU to compute pitch, roll, yaw angles and use that to understand the motion of our robot. Specifically, we will first connect
+                                    the IMU to Artemis, try to read different types of data from serial, and then transmit them to PC through bluetooth connection.
+                                 </p>
+
+                              <h4 style="text-align:left;font-weight: bold;"><br><u>Task 1: Setup the IMU</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    First, we would like to connect the IMU to our Artemis board using a QWIIC cable. A picture demonstrating the connection is shown below:
+                                 </p>  
+                                 <img class="img-rounded" src="assets/lab4/imu_hw.jpg" alt="IMU connection" style="width:50%";><br>
+                                 <figcaption style="font-size: 16px;"><em>IMU connection</em></figcaption><br>
+
+                                 <p style="text-align: left;padding: 0px 30px;"> 
+                                    With the IMU connected to our board, we could start to sample some readings. Here are some outputs from serial from the example program:
+                                 </p><br>
+                                 <img class="img-rounded" src="assets/lab4/imu.png" alt="IMU output" style="width:100%";><br>
+                                 <figcaption style="font-size: 16px;"><em>IMU example output</em></figcaption><br>
+
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    <b>AD0_VAL</b><br>
+                                    AD0_VAL is a constant we could define ourselves with a default value of 1. The value actually map to the LSB of the i2c address of our IMU, which is 
+                                    7'b110100X. By default, the LSB of the hardware address is set to 1, but could be changed by connecting the AD0 PIN on the IMU to a LOW signal. In that way, 
+                                    two IMU devices of such type could be supported on the same I2C bus, one of them having LSB=0 and another having LSB=1.
+                                 </p><br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    <b>IMU Data</b><br>
+                                    We could see that IMU data consists data from accelerometer, gyroscope, and magnetometer. It may be difficult to read or transmit such a long string when we 
+                                    are processing our data. So we might want to pre-process these data to calculate values of our interest (pitch, roll, yaw) and then print/transmit them through
+                                    the serial interface/bluetooth.
+                                 </p><br>
+
+                              <h4 style="text-align:left;font-weight: bold;"><br><u>Task 2: Accelerometer</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    The equation for calculating pitch and roll is the following:
+                                 </p> 
+                                 <img class="img-rounded" src="assets/lab4/eqn.png" alt="eqn" style="width:50%";><br>
+                                 <figcaption style="font-size: 16px;"><em>pitch&roll equation</em></figcaption><br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    After playing with the accelerometer for a while and reading the output, I would say it is pretty accurate since it does not have significant deviations when 
+                                    I leave it on the desk or hold it at a stationary position. I was also able to confirm that the readings are correct by collecting data of angles at {-90, 0, 90}
+                                    respectively.
+                                 </p> <br>
+                                 <div class="row" style="text-align: center;">
+                                   <div class="column3">
+                                    <img class="img-rounded" src="assets/lab4/prn90.png" alt="prn90" style="width:90%";><br>
+                                    <figcaption style="font-size: 16px;"><em>-90 degs</em></figcaption>
+                                   </div>
+                                   <div class="column3">
+                                    <img class="img-rounded" src="assets/lab4/pr00.png" alt="pr00" style="width:95%";><br>
+                                    <figcaption style="font-size: 16px;"><em>0 deg</em></figcaption>
+                                   </div>
+                                   <div class="column3">
+                                    <img class="img-rounded" src="assets/lab4/pr90.png" alt="pr90" style="width:100%";><br>
+                                    <figcaption style="font-size: 16px;"><em>90 degs</em></figcaption>
+                                   </div>
+                                 </div><br>
+
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    However, as I visualize such data, I realized that there are high frequency noises in the data collected since there are sharp spikes everywhere in the plot. There 
+                                    are several ways to apply a low-pass filter: using the onboard low-pass function, or compute FFT(Fast Fourier Transform) after data collection and apply the filter. 
+                                    Since it would be easier to draw comparison plots, I chose the latter implementation. Using a python script, I would first perform fft on the original signal, remove
+                                    the high frequency components in the frequency domain, and then perform inverse fft to synthesize a new signal. The comparison is shown below:
+                                 </p> <br>
+                                 <img class="img-rounded" src="assets/lab4/lp.png" alt="lp" style="width:70%";><br>
+                                 <figcaption style="font-size: 16px;"><em>original and low-pass filtered signal</em></figcaption><br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    It is apparent that, after applying the low-pass filter, our new graph looks much smoother, and it became easier for us to observe the general trends of pitch and roll
+                                    changes over time. 
+                                 </p> <br>
+
+                              <h4 style="text-align:left;font-weight: bold;"><br><u>Task 3: Gyroscope</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    Gyroscopes are known to be less noisy but they have the issue of drifting. Even at stationary positions, small errors in the gyroscope could accumulate over time.
+                                    After a significant amount of time, the readings would no longer be accurate as they drifted too far away from the actual values. A demonstration is attatched below, 
+                                    showing that at pitch=90 degs, the estimated pitch value using gyro readings drifted to >250. Roll and yaw also incremented to values >200 which are not accurate.
+                                 </p> <br>
+                                 <img class="img-rounded" src="assets/lab4/gyro_90.jpg" alt="gyro_90" style="width:40%";><br>
+                                 <figcaption style="font-size: 16px;"><em>estimation using gyro readings</em></figcaption><br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    After such observation, I decided to apply a complimentary filter on the gyro readings. <a href="https://vanhunteradams.com/Pico/ReactionWheel/Complementary_Filters.html" style="color:blue"><u>Here</u></a> is a very detailed description of complimentary filters provided by professor Hunter Adams at Cornell for his microcontroller class. Essentially, the filter adds the current estimated change scaled by the sampling frequency to the previous value, multiply that value by a constant alpha, and add another accelerometer estimation term timed by (1-alpha).
+                                 </p> <br>
+                                 <img class="img-rounded" src="assets/lab4/eqn_g.png" alt="eqng" style="width:50%";><br>
+                                 <figcaption style="font-size: 16px;"><em>complimentary filter equation</em></figcaption><br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    With the filter, we no longer suffer from the drifting problem, and below is an example where I rested the IMU for a few minutes and picked it up -- it still shows
+                                    the accurate readings at 90 degs. After increasing the sampling frequency, I got better accuracy since the dt term is now smaller and we update the estimation more
+                                    frequently in smaller scales.
+                                 </p> <br>
+                                 <img class="img-rounded" src="assets/lab4/gyro_comp_90.jpg" alt="gyro_comp_90" style="width:40%";><br>
+                                 <figcaption style="font-size: 16px;"><em>gyro estimation with complimentary filter</em></figcaption><br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    After some additional testing, I concluded that the gyroscope estimations are not affected by rapid movements, and could reflect them accurately:
+                                 </p> <br>
+                                 <video width=30%; controls>
+                                    <source src="assets/lab4/shake.mp4" type=video/mp4>
+                                 </video><br><br>
+
+                              <h4 style="text-align:left;font-weight: bold;"><br><u>Task 4: Sample Data</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    Now we wanted to send the collected data to our PCs using BLE instead of simply printing them through the serial interface. According to the datasheet, the 
+                                    theoretical interval between two IMU sampling should be less than 1ms. However, since we are using BLE to transmit data, the actual rate we could transmit our 
+                                    data is limited by the BLE transmission itself. I decided to wait for TOF sensors to be ready before sending each batch of data, which I found out to have ~60ms
+                                    interval between each sample. This should give Artemis enough time to format data and transmit them through BLE. Following is a video showing the data collection 
+                                    procedure:
+                                 </p> <br>
+                                 <video width=30%; controls>
+                                    <source src="assets/lab4/dataimu.mp4" type=video/mp4>
+                                 </video><br><br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    With visulization, we could see that the readings from accelerometers appear to be more noise, while the gyro data with complimentary filters are much less noisy.
+                                    After sampling for 10 seconds, I could calculate the actual sampling rate is 1000/60 = 16.6Hz from this demonstration. Since I am waiting data from both TOF and IMU 
+                                    to be ready before actually sending the data, I do not need to store them in an array on Artemis. I could simply send the current data in a long string and discard 
+                                    them immediately, so there wouldn't be a memory capacity concern associated with my approach.
+                                 </p> <br>
+
+                              <h4 style="text-align:left;font-weight: bold;"><br><u>Task 5: Cut the Cord!</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    We are using two types of batteries: 3.7V 850mAh, and 3.7V 650mAh. The only difference is in their capacities. Since the motors are drawing significantly larger 
+                                    power when we are driving the car, we would want to use the 850mAh batteries for them. The 650mAh batteries would be pretty enough to power the Artemis board and 
+                                    its peripherals. We should be extremely careful when plugging in the batteries not to reverse the +/- pin connections. Following is a picture showing Artemis connected 
+                                    to the 650mAh battery. Artemis function exactly the same as when it was connect to our PCs, and bluetooth/sensors were still working as well.
+                                 </p> <br>
+                                 <img class="img-rounded" src="assets/lab4/imu_battery.jpg" alt="imu_battery" style="width:40%";><br>
+                                 <figcaption style="font-size: 16px;"><em>Artemis powered by a battery</em></figcaption><br>
+                              
+                              <h4 style="text-align:left;font-weight: bold;"><br><u>Task 6: Record a stunt</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    After taping all the components to the car, we will able to record some data for stunts. Following is how I taped everything onto my car. Obviously it's not very 
+                                    pretty or organized, but it should work for this short data collection trial. I have one ToF facing the front and another facing the left.
+                                 </p> <br>
+                                 <img class="img-rounded" src="assets/lab4/car.jpg" alt="car" style="width:40%";><br>
+                                 <figcaption style="font-size: 16px;"><em>Car setup</em></figcaption><br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    Then we are ready for a trial! One thing I noted about the car when playing around with it is that it does not always go straight when instructed to go forward. 
+                                    There might be differences in surface friction, or motor power, leading to a slight drift. Overall, the drift was almost negligible. Following is a video of 20s of data collection: (I'm not really good at driving this to be honest)
+                                 </p> <br>
+                                 <video width=30%; controls>
+                                    <source src="assets/lab4/stunts.mp4" type=video/mp4>
+                                 </video><br><br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    With the data transmitted to our PC, we could plot them and see how they looked like. Since I was not using the built-in low-pass filter on the IMU, the accelerometer
+                                    readings are somewhat noisy. One of the ToF also came off after a few stunts, indicating that I really should mount them better to get better readings. Generally 
+                                    speaking, we can still observe a few flips by looking at the data, but a lot of times when I try to do a flip, it flips back again so it might not be reflected clearly on the plots.  <a href="assets/lab4/zechen_lab4.ipynb" download target="_blank" style="color:blue"><u>Click to download jupyter notebook</u></a>
+                                 </p> <br>
+                                 <div class="row" style="text-align: center;">
+                                   <div class="column3">
+                                    <img class="img-rounded" src="assets/lab4/stunt_tof.png" alt="stunt_tof" style="width:90%";><br>
+                                    <figcaption style="font-size: 16px;"><em>TOF</em></figcaption>
+                                   </div>
+                                   <div class="column3">
+                                    <img class="img-rounded" src="assets/lab4/stunt_acc.png" alt="stunt_acc" style="width:95%";><br>
+                                    <figcaption style="font-size: 16px;"><em>Accelerometer</em></figcaption>
+                                   </div>
+                                   <div class="column3">
+                                    <img class="img-rounded" src="assets/lab4/stunt_gyro.png" alt="stunt_gyro" style="width:100%";><br>
+                                    <figcaption style="font-size: 16px;"><em>Gyroscope</em></figcaption>
+                                   </div>
+                                 </div><br>
+
+
+                             </details>
+
+
 <!--                          <img class="img-rounded" src="images/penguin.jpg" alt="Generic placeholder image" style="width:20%; text-align: center;"><br>
                               <p>Placeholder image</p> -->
                      </div>
