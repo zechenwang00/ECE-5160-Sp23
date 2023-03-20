@@ -939,9 +939,77 @@ if (currentMillis - previousMillis >= interval) {
                                     material of the surface which the car is driving on.
                                  </p><br>
 
+                             </details>
 
 
 
+                             <details>
+                              <summary style="text-align:left;font-weight: bold; color:#fc4311;font-size: 24px;text-decoration:underline;">Lab 6: PID Speed Control</summary>
+                                 <h4 style="text-align:left;font-weight: bold;"><br><u>Introduction</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    In this lab we will try to implement a PID controller for the motors on the car to control the car's motion. Specifically, I will implement a
+                                     position controller using readings from a ToF sensor to stop the car at 300 mm distance from a wall. The controller should work with various
+                                     starting positions and should smoothly guide our car towards the destination without sudden stops, oscillating behaviors, etc.
+                                 </p>
+
+                                 <h4 style="text-align:left;font-weight: bold;"><br><u>Prelab: Data Processing</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    In order to verify the effectiveness of our PID controller, we need to record the ToF readings and PWM outputs on Artemis for the entire trip,
+                                     and send them back to our laptop when we send a stop signal. To store these data, we would need to declare a few arrays in the arduino code and
+                                     consider if they would use up all of our onboard RAM.
+                                 </p><br>
+                                 <img src="assets/lab6/arrays.jpg" alt="l6arr" style="width:100%">
+                                 <figcaption style="font-size: 16px;"><em>allocating memory for arrays</em></figcaption>
+                                 <br>
+                                  <p style="text-align: left;padding: 0px 30px;">
+                                      The code snippet above shows that we are declaring two data lists for TOF and PWM using the data type <FONT COLOR=#b7282e>short</FONT>
+                                      , as the readings would always be within the range of a short variable. We also have to <FONT COLOR=#b7282e>int</FONT> arrays for storing time data.
+                                      While the function <FONT COLOR=#b7282e>millis()</FONT> for reading timestamps actually returns long ints, using ints should be enough unless we plan
+                                      to run the code for an extraordinary long period of time.<br><br>
+                                      Under this setting, we have allocated <FONT COLOR=#b7282e> 12 bytes * LIST_SIZE </FONT> of RAM for storing data. Considering we have 384k RAM on Artemis,
+                                      we could safely record around 30,000 data points. Assuming data is recorded every 60ms, we could record <FONT COLOR=#b7282e>1800 seconds </FONT>
+                                      of data. We could further improve this if we record the starting timestamp and only save relative timestamps while collecting data using smaller data
+                                      types, and we could potentially only use one time array if we assume the PWM signals are generated immediately after we receive the ToF readings.
+                                 </p>
+                                 <br>
+
+                                 <h4 style="text-align:left;font-weight: bold;"><br><u>Prelab: Data Transmission</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    Then we need to transmit all the data points to PC using BLE connection. Note that the BLE string have size limitations so we would need to separate all
+                                     the data points into several segments and transmit them in a serialized string. The implementation is included in this snippet:
+                                 </p><br>
+                                 <img src="assets/lab6/send_data.jpg" alt="l6send" style="width:60%">
+                                 <figcaption style="font-size: 16px;"><em>Serialize Data</em></figcaption>
+                                 <br>
+                                <p style="text-align: left;padding: 0px 30px;">
+                                    For each segment, I will first append a charater <FONT COLOR=#b7282e>T</FONT> or <FONT COLOR=#b7282e>P</FONT> to indicate whether it is a ToF or PWM data
+                                    segment. Then I will start to append data in the format of <FONT COLOR=#b7282e>TIME&DATA</FONT> for a particular number of times (currently 8 data points
+                                    in each message as specified in the previous snippet).
+                                 </p><br>
+                                <p style="text-align: left;padding: 0px 30px;">
+                                    On the PC side, we need to deserialize the strings and interpret them. This is done using the following python callback function:
+                                 </p><br>
+                                 <img src="assets/lab6/recv_data.jpg" alt="l6send" style="width:50%">
+                                 <figcaption style="font-size: 16px;"><em>Deserialize Data</em></figcaption>
+                                 <br>
+
+                                 <h4 style="text-align:left;font-weight: bold;"><br><u>Task: PID control</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    We are now ready to implement the PID controller on Artemis. The essential part of the PID controller is to read from the sensor and calculate the output,
+                                     the calculation part is done by the following code:
+                                 </p><br>
+                                 <img src="assets/lab6/pid_calc.jpg" alt="l6pidcalc" style="width:40%">
+                                 <figcaption style="font-size: 16px;"><em>PID Calculation</em></figcaption>
+                                 <br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    The logic of our PID controller is pretty straightforward and the more difficult part of designing this PID controller is about parameter tuning. To fine
+                                     tune the parameters, I would first need to establish a way that I could translate the PID controller's output to the motor's PWM signals. I decided to
+                                     give the motors some <FONT COLOR=#b7282e>OFFSET = 25</FONT> which is small enough to keep the car stationary, but can help the car to start moving with
+                                     a very small PID output value added onto it. The offset is determined by the sign of the PID output so that it works in both directions. I also implemented
+                                     an upper bound for the duty cycle to <FONT COLOR=#b7282e>100/255</FONT> so that it won't move too fast potentially due to some erroneous readings.
+                                 </p><br>
+                                 <img src="assets/lab6/motor_code.jpg" alt="l6motorcode" style="width:40%">
+                                 <figcaption style="font-size: 16px;"><em>Motor Controls</em></figcaption>
 
                              </details>
 
