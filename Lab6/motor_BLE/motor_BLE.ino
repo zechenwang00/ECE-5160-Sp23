@@ -292,90 +292,90 @@ handle_command()
 
   switch (cmd_type) {
     case 0: {
-      // sensor
-      distanceSensor1.startRanging(); //Write configuration bytes to initiate measurement
-      distanceSensor2.startRanging();
+      // // sensor
+      // distanceSensor1.startRanging(); //Write configuration bytes to initiate measurement
+      // distanceSensor2.startRanging();
 
-      Serial.println("waiting for data...");
-      while ( !(distanceSensor1.checkForDataReady() && distanceSensor2.checkForDataReady()) )
-      {
-        delay(1);
-      }
+      // Serial.println("waiting for data...");
+      // while ( !(distanceSensor1.checkForDataReady() && distanceSensor2.checkForDataReady()) )
+      // {
+      //   delay(1);
+      // }
 
-      int distance1 = distanceSensor1.getDistance(); //Get the result of the measurement from the sensor
-      int distance2 = distanceSensor2.getDistance(); //Get the result of the measurement from the sensor
-      distanceSensor1.clearInterrupt();
-      distanceSensor1.stopRanging();
-      distanceSensor2.clearInterrupt();
-      distanceSensor2.stopRanging();
+      // int distance1 = distanceSensor1.getDistance(); //Get the result of the measurement from the sensor
+      // int distance2 = distanceSensor2.getDistance(); //Get the result of the measurement from the sensor
+      // distanceSensor1.clearInterrupt();
+      // distanceSensor1.stopRanging();
+      // distanceSensor2.clearInterrupt();
+      // distanceSensor2.stopRanging();
 
-      //get time
-      long int t_ms = millis();    
-      char t_str[10];
-      itoa(t_ms, t_str, 10);
+      // //get time
+      // long int t_ms = millis();    
+      // char t_str[10];
+      // itoa(t_ms, t_str, 10);
 
-      // init tof if needed
-      if (init_pid == 0) {
-        tof1_list[2] = distance1;
-        tof1_list[1] = distance1;
-        tof1_list[0] = distance1;
+      // // init tof if needed
+      // if (init_pid == 0) {
+      //   tof1_list[2] = distance1;
+      //   tof1_list[1] = distance1;
+      //   tof1_list[0] = distance1;
         
-        pid_last_time = t_ms;
-        pid_i = 0;
-        pid_d = 0;
+      //   pid_last_time = t_ms;
+      //   pid_i = 0;
+      //   pid_d = 0;
         
-        memset(tof_data_list, 0, sizeof(tof_data_list));
-        memset(tof_time_list, 0, sizeof(tof_time_list));
-        memset(pwm_data_list, 0, sizeof(pwm_data_list));
-        memset(pwm_time_list, 0, sizeof(pwm_time_list));
+      //   memset(tof_data_list, 0, sizeof(tof_data_list));
+      //   memset(tof_time_list, 0, sizeof(tof_time_list));
+      //   memset(pwm_data_list, 0, sizeof(pwm_data_list));
+      //   memset(pwm_time_list, 0, sizeof(pwm_time_list));
 
-        init_pid = 1;
+      //   init_pid = 1;
 
-      } else {
-        tof1_list[0] = tof1_list[1];
-        tof1_list[1] = tof1_list[2];
-        tof1_list[2] = distance1;
-      }
+      // } else {
+      //   tof1_list[0] = tof1_list[1];
+      //   tof1_list[1] = tof1_list[2];
+      //   tof1_list[2] = distance1;
+      // }
 
-      // calculate err
-      float pid_dt;
-      pid_dt = (int)(t_ms - pid_last_time) / 1000.0;
-      //p
-      int pid_e;
-      pid_e = setpoint - distance1;
-      //i
-      pid_i += pid_e * pid_dt;
-      //d
-      pid_d = pid_alpha * pid_d + (1 - pid_alpha) * (tof1_list[1] - tof1_list[0]) / pid_dt;
+      // // calculate err
+      // float pid_dt;
+      // pid_dt = (int)(t_ms - pid_last_time) / 1000.0;
+      // //p
+      // int pid_e;
+      // pid_e = setpoint - distance1;
+      // //i
+      // pid_i += pid_e * pid_dt;
+      // //d
+      // pid_d = pid_alpha * pid_d + (1 - pid_alpha) * (tof1_list[1] - tof1_list[0]) / pid_dt;
 
-      //pwm signal
-      float pid_pwm;
-      pid_pwm = kp * pid_e + ki * pid_i + kd * pid_d;
+      // //pwm signal
+      // float pid_pwm;
+      // pid_pwm = kp * pid_e + ki * pid_i + kd * pid_d;
 
-      // update current itr
-      pid_last_time = t_ms;
+      // // update current itr
+      // pid_last_time = t_ms;
 
-      tx_estring_value.clear();
-      tx_estring_value.append(t_str);
-      tx_estring_value.append(",");
-      tx_estring_value.append(distance1);
-      tx_estring_value.append(",");
-      tx_estring_value.append(distance2);
-      tx_estring_value.append(",");
-      tx_estring_value.append(pid_dt);
-      tx_estring_value.append(",");
-      tx_estring_value.append(pid_e);
-      tx_estring_value.append(",");
-      tx_estring_value.append(pid_i);
-      tx_estring_value.append(",");
-      tx_estring_value.append(pid_d);
-      tx_estring_value.append(",");
-      tx_estring_value.append(pid_pwm);
-      tx_estring_value.append("|");
-      tx_characteristic_string.writeValue(tx_estring_value.c_str());
+      // tx_estring_value.clear();
+      // tx_estring_value.append(t_str);
+      // tx_estring_value.append(",");
+      // tx_estring_value.append(distance1);
+      // tx_estring_value.append(",");
+      // tx_estring_value.append(distance2);
+      // tx_estring_value.append(",");
+      // tx_estring_value.append(pid_dt);
+      // tx_estring_value.append(",");
+      // tx_estring_value.append(pid_e);
+      // tx_estring_value.append(",");
+      // tx_estring_value.append(pid_i);
+      // tx_estring_value.append(",");
+      // tx_estring_value.append(pid_d);
+      // tx_estring_value.append(",");
+      // tx_estring_value.append(pid_pwm);
+      // tx_estring_value.append("|");
+      // tx_characteristic_string.writeValue(tx_estring_value.c_str());
 
-      Serial.print("Sent back: ");
-      Serial.println(tx_estring_value.c_str());
+      // Serial.print("Sent back: ");
+      // Serial.println(tx_estring_value.c_str());
 
       break;
     }
@@ -509,8 +509,7 @@ void loop(void)
             pid_i = -1000;
           }
           //d
-          float pid_d;
-          pid_d = (tof1_list[1] - tof1_list[0]) / pid_dt;
+          pid_d = pid_alpha * pid_d + (1 - pid_alpha) * (tof1_list[1] - tof1_list[0]) / pid_dt;
 
           //pwm signal
           float pid_pwm;
@@ -518,18 +517,6 @@ void loop(void)
 
           // update current itr
           pid_last_time = t_ms;
-
-          // Serial.print("TOF:");
-          // Serial.print(distance1);
-          // Serial.print(" PWM:");
-          // Serial.print(pid_pwm);
-          // Serial.print(" p:");
-          // Serial.print(kp * pid_e);
-          // Serial.print(" i:");
-          // Serial.print(ki * pid_i);
-          // Serial.print(" d:");
-          // Serial.println(kd * pid_d);
-
           
           motor_both(round(pid_pwm));
 

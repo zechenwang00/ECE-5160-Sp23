@@ -993,7 +993,7 @@ if (currentMillis - previousMillis >= interval) {
                                  <figcaption style="font-size: 16px;"><em>Deserialize Data</em></figcaption>
                                  <br>
 
-                                 <h4 style="text-align:left;font-weight: bold;"><br><u>Task: PID control</u></h4>
+                                 <h4 style="text-align:left;font-weight: bold;"><br><u>Task: PID Control</u></h4>
                                  <p style="text-align: left;padding: 0px 30px;">
                                     We are now ready to implement the PID controller on Artemis. The essential part of the PID controller is to read from the sensor and calculate the output,
                                      the calculation part is done by the following code:
@@ -1006,10 +1006,99 @@ if (currentMillis - previousMillis >= interval) {
                                      tune the parameters, I would first need to establish a way that I could translate the PID controller's output to the motor's PWM signals. I decided to
                                      give the motors some <FONT COLOR=#b7282e>OFFSET = 25</FONT> which is small enough to keep the car stationary, but can help the car to start moving with
                                      a very small PID output value added onto it. The offset is determined by the sign of the PID output so that it works in both directions. I also implemented
-                                     an upper bound for the duty cycle to <FONT COLOR=#b7282e>100/255</FONT> so that it won't move too fast potentially due to some erroneous readings.
+                                     an upper bound for the duty cycle to <FONT COLOR=#b7282e>100/255</FONT> so that it won't move too fast potentially due to some erroneous readings (if any).
                                  </p><br>
                                  <img src="assets/lab6/motor_code.jpg" alt="l6motorcode" style="width:40%">
-                                 <figcaption style="font-size: 16px;"><em>Motor Controls</em></figcaption>
+                                 <figcaption style="font-size: 16px;"><em>Motor Controls</em></figcaption><br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                     I started tuning the parameters using simply a p controller. I started with a value of <FONT COLOR=#b7282e>p=0.1</FONT> since that would give me a maximum
+                                     PID output of 100 if I am 1000 mm away from my target. It will also be able to correct itself within a range of 100 mm with an output of 10, given that my offset
+                                     is 25 and I found out ~35 is the minimum duty to keep the motion going. I ended up with an oscillating car using the p controller, suggesting that introducing
+                                     I and D control and scaling down the kp value may be a better approach.
+                                 </p><br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                     With all the P, I, D terms included, I reduced my kp value and slightly increased the ki and kd value, using an <FONT COLOR=#b7282e>alpha = 0.5</FONT> for the
+                                     derivative term. The final values I used were <FONT COLOR=#b7282e>kp = 0.06, ki = 0.01, kd = 0.03</FONT> with a boundary for the integrator: [-1000, 1000].
+                                 </p><br>
+
+                                 <h4 style="text-align:left;font-weight: bold;"><br><u>Task: PID Evaluation</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    In this section we will evaluate the performance of the PID controller using the parameters I just discussed. First, after a few trials, I concluded that the ToF
+                                     sensor I am using could only accurately measure the distance when objects are within a <FONT COLOR=#b7282e>2m</FONT> range. Anything further than 2m could possibly
+                                     result in random/erroneous/zero readings. Therefore, I decided to test within the 2m range at different starting distances and see if it works reliably. Following
+                                     are some timestamps transmitted back from Artemis, and we can use that to determine the sampling time:
+                                 </p><br>
+                                 <img src="assets/lab6/timestamps.jpg" alt="l6time" style="width:60%">
+                                 <figcaption style="font-size: 16px;"><em>Timestamps</em></figcaption><br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                     We could read from this data that the average sampling interval is about <FONT COLOR=#b7282e>65ms</FONT>, which is equivalent to <FONT COLOR=#b7282e>15Hz</FONT>.
+                                     With this sampling rate, we should be confident that our controller will be able to respond to environmental changes quickly enough.<br><br>
+                                 </p>
+                                 <h4 style="text-align:left;font-weight: bold;"><br><u>Demo: Close starting point</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                     Now we can evaluate that this PID controller stops the car at the desired distance. Following is a video demonstrating the car starting at a relatively closer
+                                     position(~1.2m):
+                                 </p><br>
+                                 <video width=60%; controls>
+                                    <source src="assets/lab6/near.mp4" type=video/mp4>
+                                 </video><br><br>
+                                 <div class="row" style="text-align: center;">
+                                   <div class="column2">
+                                     <img src="assets/lab6/near_tof.jpg" alt="l6neartof" style="width:100%">
+                                     <figcaption style="font-size: 16px;"><em>ToF readings</em></figcaption>
+                                   </div>
+                                   <div class="column2">
+                                     <img src="assets/lab6/near_pwm.jpg" alt="l6nearpwm" style="width:100%">
+                                     <figcaption style="font-size: 16px;"><em>PWM outputs</em></figcaption>
+                                   </div>
+                                 </div>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                     Jupyter notebook file used to visualize the data could be downloaded
+                                     <a href="assets/lab6/lab6_near.ipynb" download target="_blank" style="color:blue"><u>here</u></a>.<br><br>
+                                     In the video we could see that the car did stop at ~1 tile distance from the wall and stopped. From the visualized ToF data we could also verify that
+                                     the distance ended up at a little below 300. The PWM data showed that the car did try to stop at around 2000ms, since any value below 30 belongs to the
+                                     deadband. A sudden small spike at ~2000ms may be the reason why the car stopped a little closer to the target, maybe due to an error in the ToF reading
+                                     during deceleration. 
+                                 </p><br>
+                                 
+                                 <h4 style="text-align:left;font-weight: bold;"><br><u>Demo: Far starting point</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    Then we will try to place the car a little farther, at a distance ~1.8m, showing that the PID controller can have similar performances at different distances.
+                                 </p><br>
+                                 <video width=60%; controls>
+                                    <source src="assets/lab6/far.mp4" type=video/mp4>
+                                 </video><br><br>
+                                 <div class="row" style="text-align: center;">
+                                   <div class="column2">
+                                     <img src="assets/lab6/far_tof.jpg" alt="l6neartof" style="width:100%">
+                                     <figcaption style="font-size: 16px;"><em>ToF readings</em></figcaption>
+                                   </div>
+                                   <div class="column2">
+                                     <img src="assets/lab6/far_pwm.jpg" alt="l6nearpwm" style="width:100%">
+                                     <figcaption style="font-size: 16px;"><em>PWM outputs</em></figcaption>
+                                   </div>
+                                 </div>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    Jupyter notebook file used to visualize the data could be downloaded
+                                    <a href="assets/lab6/lab6_far.ipynb" download target="_blank" style="color:blue"><u>here</u></a>.<br><br>
+                                    Still, the controller was able to stop the car at ~300mm even if started at a farther position. We could conclude that the controller works reasonably well
+                                    within the 2m range.
+                                </p><br>
+
+                                <h4 style="text-align:left;font-weight: bold;"><br><u>5000-level Discussion</u></h4>
+                                <p style="text-align: left;padding: 0px 30px;">
+                                   The wind-up protection that I implemented for my integrator is simply a hard-coded upper and lower numerical boundary.
+                                </p><br>
+                                <img src="assets/lab6/wind.jpg" alt="l6wind" style="width:30%">
+                                <figcaption style="font-size: 16px;"><em>wind up protection</em></figcaption>
+                                <p style="text-align: left;padding: 0px 30px;">
+                                 Such limit is necessary because we don't want the numbers stored in the intergrator to blow up. It could not only cause overflow issues, but also, more importantly,
+                                 will cause the I term in our PID controller to be the only dominant term. Imagine we elevate the car and keep it at a far distance from its goal, the integrator
+                                 will add up to a very large number over time without protection. Then when we put the car back onto the floor, it will be dominated by the I term even if the target
+                                 is reached. The car will likely hit the wall and keep moving forward, as it also takes much time for the intergrator to be decremented back to zero again.<br><br>
+
+                                 With the protection, we can always make sure that the I term will be in a reasonable range, and could be decremented quickly enough to correct any accumulated errors.
+                                </p><br>
 
                              </details>
 
