@@ -1107,8 +1107,8 @@ if (currentMillis - previousMillis >= interval) {
                                  <h4 style="text-align:left;font-weight: bold;"><br><u>Introduction</u></h4>
                                  <p style="text-align: left;padding: 0px 30px;">
                                     We will try to implement a Kalman filter to improve the PID controller behavior in Lab 6. Our goal is to use the Kalman filter to supplement the ToF readings
-                                     which could be too slow for real time controls. After implementing the algorithm, I will try to use some priori data gathered in previous PID runs for the
-                                     kalman filter, and evaluate its performance under different constraints.
+                                     which could be too slow for real time controls. After implementing the algorithm, I will try to use some data gathered in previous PID runs for the
+                                     kalman filter, evaluate its performance, and try to do extrapolation.
                                  </p>
 
                                  <h4 style="text-align:left;font-weight: bold;"><br><u>Task 1: Estimate drag and momentum</u></h4>
@@ -1116,8 +1116,8 @@ if (currentMillis - previousMillis >= interval) {
                                     In the first place, we would need to run several tests to gather essential data to deduce some parameters for the kalman filter. Specifically, we want to record
                                      data of a step response: driving the car towards a wall, try to stay at steady state for a while, and brake actively before crashing into the wall. For the
                                      Artemis program, I used <FONT COLOR=#b7282e>PWM=100/255</FONT> when a start command is received, and I would stop the car when <FONT COLOR=#b7282e>ToF < 900</FONT>
-                                     by actively reversing the motors for a brief period of time.
-                                     Following is the data I gathered through such a trial:
+                                     by actively reversing the motors for a brief period of time. By placing the car 2000 mm from the wall, I collected the following data:
+                                     <a href="assets/lab7/lab7_step_final.ipynb" download target="_blank" style="color:blue"><u>jupyter notebook file</u></a>
                                  </p><br>
 
                                 <div class="row" style="text-align: center;">
@@ -1131,7 +1131,86 @@ if (currentMillis - previousMillis >= interval) {
                                    </div>
                                  </div>
 
-                                 
+                                  <p style="text-align: left;padding: 0px 30px;">
+                                    Using these data, and with some processing, we could plot a velocity vs. time graph and use that to determine if the system has reached steady state, the steady state
+                                      speed, 90% rise time, etc.
+                                 </p><br>
+                                 <div class="row" style="text-align: center;">
+                                   <div class="column2">
+                                      <img src="assets/lab7/step_vel.jpg" alt="l7stepvel" style="width:100%">
+                                      <figcaption style="font-size: 16px;"><em>Velocity graph</em></figcaption>
+                                   </div>
+                                   <div class="column2">
+                                      <img src="assets/lab7/step_num.jpg" alt="l7stepnum" style="width:100%">
+                                      <figcaption style="font-size: 16px;"><em>Extract parameters from data</em></figcaption>
+                                   </div>
+                                 </div>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                     From the above graph we can confirm that the system did reach a steady state at around ~1s, and the <FONT COLOR=#b7282e>maximum speed = 1761mm/s</FONT>.
+                                     The <FONT COLOR=#b7282e> 90% rise time = 0.781s</FONT>.<br>
+                                     Using the equation provided in class, we can estimate drag by using u=1, <FONT COLOR=#b7282e>drag = 0.00568</FONT>.<br>
+                                     Max speed, 90% rise time, and drag are the three important parameters we need to calculate for our sytem, and with these values, we are ready to proceed to
+                                     the next step.
+                                 </p><br>
+
+                             <h4 style="text-align:left;font-weight: bold;"><br><u>Task 2: Implement KF</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    Jupyter notebook can be downloaded <a href="assets/lab7/lab7_filter.ipynb" download target="_blank" style="color:blue"><u>here</u></a>.<br><br>
+                                    In this section we will try to initialize all essential parameters for the Kalman filter. First, we want to fill in the A, B, and C matrices. The state space
+                                     equation is given as: <img src="assets/lab7/matrix.jpg" alt="l7matrix" style="width:20%"><br>
+                                     So we calculate -d/m and 1/m first and fill them into the variables.
+                                 </p><br>
+                                 <img src="assets/lab7/ABC.jpg" alt="l7abc" style="width:40%"><br>
+                                 <figcaption style="font-size: 16px;"><em>Matrix Initialization</em></figcaption>
+                                 <br><br>
+
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    Then we would need to estimate the noise parameters, which are the most important parameters for Kalman filters as they are intended to work with noises.
+                                    Delta t would be either 65ms or 105ms, depending on if we are using short or long range mode ToF sampling. I assumed <FONT COLOR=#b7282e> sigma_measurement
+                                     = 40</FONT> when moving, which is a very large value. However, it was proven later on that the large error margin actually worked very well in the filter.
+                                     For processing error, we calculate the expected standard deviation using the sampling rate value, and the result for 65ms sampling interval is
+                                     <FONT COLOR=#b7282e> sigma_processing = 39.2 </FONT>
+                                 </p><br>
+                                 <img src="assets/lab7/noise.jpg" alt="l7noise" style="width:60%"><br>
+                                 <figcaption style="font-size: 16px;"><em>Noise Estimation</em></figcaption><br>
+
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    Now we can proceed to discretize the A, B matrices and put them into the kalman filter implementation. The kalman filter definition is given in the lab instruction.
+                                 </p><br>
+                                 <img src="assets/lab7/kf.jpg" alt="l7kf" style="width:50%"><br>
+                                 <figcaption style="font-size: 16px;"><em>Kalman Filter</em></figcaption><br>
+
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    The last step would be setting an initial state, and then we could try to run the Kalman filter on the lab6 PID data using such initial conditions.
+                                     I assumed that the initial standard deviation for position and speed are both 10, and used the first ToF reading as the inital position, 0 as the initial velocity.
+                                 </p><br>
+                                 <img src="assets/lab7/init.jpg" alt="l7init" style="width:50%"><br>
+                                 <figcaption style="font-size: 16px;"><em>Initial State</em></figcaption><br>
+
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    Following is a visualization of what I got by running the Kalman filter on lab6 data, which shows a pretty good estimate. There seemed to be a little deviation at the
+                                     beginning, but the estimated values gradually became very close to the actual data points.
+                                 </p><br>
+                                 <img src="assets/lab7/est.jpg" alt="l7est" style="width:60%"><br>
+                                 <figcaption style="font-size: 16px;"><em>Estimate using lab6 data</em></figcaption><br>
+
+                                  <p style="text-align: left;padding: 0px 30px;">
+                                    I also tried playing with KF using different parameters, and I found out that the performance of KF worsens as I set the noise to smaller values. Following is an
+                                      example showing <FONT COLOR=#b7282e> sigma_measurement = 10</FONT>, and <FONT COLOR=#b7282e> inital state's standard deviation = 5</FONT> for both position and velocity.
+                                      It is clear that the second estimate deviated much more from the actual data points.
+                                 </p><br>
+                                 <img src="assets/lab7/est2.jpg" alt="l7est2" style="width:60%"><br>
+                                 <figcaption style="font-size: 16px;"><em>Second estimate</em></figcaption><br>
+
+                                 <h4 style="text-align:left;font-weight: bold;"><br><u>Task 3: Extrapolation</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    TODO
+                                 </p><br>
+
+                             </details>
+
+
+
 
 <!--                          <img class="img-rounded" src="images/penguin.jpg" alt="Generic placeholder image" style="width:20%; text-align: center;"><br>
                               <p>Placeholder image</p> -->
