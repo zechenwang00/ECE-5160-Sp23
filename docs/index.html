@@ -1204,8 +1204,25 @@ if (currentMillis - previousMillis >= interval) {
 
                                  <h4 style="text-align:left;font-weight: bold;"><br><u>Task 3: Extrapolation</u></h4>
                                  <p style="text-align: left;padding: 0px 30px;">
-                                    TODO
+                                    We want to use extrapolation to help estimate the intermediate sates between each ToF sample. By using this technique, we are effectively at least doubling the sampling
+                                     rate in order to respond to envrionmental changes quickly even when driving at high velocity. Following is an extrapolation implementation, that I used half of the sampling
+                                     interval as a delta time value(30ms). For each actual ToF reading, I will try to estimate the state 30ms later of that reading by multiplying the estimated velocity and
+                                     the delta time.
                                  </p><br>
+                                 <img src="assets/lab7/ex.jpg" alt="l7ex" style="width:40%"><br><br>
+                                 <figcaption style="font-size: 16px;"><em>Extrapolation Implementation</em></figcaption><br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    By visualizing our extrapolations, we can see how well they fit into the curves: in earlier stages, extrapolation results have slightly larger discrepancies, resulting in the
+                                     zig-zag shape on the graph; in later stages, the extrapolation results fit much better with the original kalman filter estimate and the acutal data, resulting in a much
+                                     smoother prediction curve.
+                                 </p><br>
+                                 <img src="assets/lab7/ex_g.jpg" alt="l7exg" style="width:60%"><br>
+                                 <figcaption style="font-size: 16px;"><em>Extrapolation implementation</em></figcaption><br>
+                                  <p style="text-align: left;padding: 0px 30px;">
+                                    We might also want to take a closer look. Here's a center part of the curve, showing much more details of where each point is at:
+                                 </p><br>
+                                 <img src="assets/lab7/ex_g_2.jpg" alt="l7exg2" style="width:60%"><br>
+                                 <figcaption style="font-size: 16px;"><em>Extrapolation implementation</em></figcaption><br>
 
                              </details>
 
