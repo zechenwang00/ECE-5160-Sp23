@@ -1102,6 +1102,36 @@ if (currentMillis - previousMillis >= interval) {
 
                              </details>
 
+                             <details>
+                              <summary style="text-align:left;font-weight: bold; color:#fc4311;font-size: 24px;text-decoration:underline;">Lab 7: Kalman Filter</summary>
+                                 <h4 style="text-align:left;font-weight: bold;"><br><u>Introduction</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    We will try to implement a Kalman filter to improve the PID controller behavior in Lab 6. Our goal is to use the Kalman filter to supplement the ToF readings
+                                     which could be too slow for real time controls. After implementing the algorithm, I will try to use some priori data gathered in previous PID runs for the
+                                     kalman filter, and evaluate its performance under different constraints.
+                                 </p>
+
+                                 <h4 style="text-align:left;font-weight: bold;"><br><u>Task 1: Estimate drag and momentum</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    In the first place, we would need to run several tests to gather essential data to deduce some parameters for the kalman filter. Specifically, we want to record
+                                     data of a step response: driving the car towards a wall, try to stay at steady state for a while, and brake actively before crashing into the wall. For the
+                                     Artemis program, I used <FONT COLOR=#b7282e>PWM=100/255</FONT> when a start command is received, and I would stop the car when <FONT COLOR=#b7282e>ToF < 900</FONT>
+                                     by actively reversing the motors for a brief period of time.
+                                     Following is the data I gathered through such a trial:
+                                 </p><br>
+
+                                <div class="row" style="text-align: center;">
+                                   <div class="column2">
+                                     <img src="assets/lab7/step.jpg" alt="l7step" style="width:100%">
+                                     <figcaption style="font-size: 16px;"><em>ToF readings of the step response</em></figcaption>
+                                   </div>
+                                   <div class="column2">
+                                      <img src="assets/lab7/step_pwm.jpg" alt="l7steppwm" style="width:90%">
+                                      <figcaption style="font-size: 16px;"><em>PWM signals</em></figcaption>
+                                   </div>
+                                 </div>
+
+                                 
 
 <!--                          <img class="img-rounded" src="images/penguin.jpg" alt="Generic placeholder image" style="width:20%; text-align: center;"><br>
                               <p>Placeholder image</p> -->

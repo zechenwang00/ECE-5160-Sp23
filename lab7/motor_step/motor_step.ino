@@ -64,12 +64,12 @@ unsigned long currentMillis = 0;
 #define LEFT_FWD   14
 #define LEFT_RWD   15 
 #define OFFSET     25
-#define BK_OFFSET  60
+#define BK_OFFSET  40
 #define BASE_SPEED 50
 
 // 2 time lists using int and 2 data lists using short, using 12 * LIST_SIZE / 1024 RAM. Max LIST_SIZE ~= 30k.
 // can be improved if saving relative time using smaller data types, or only use 1 time list assuming synchronized
-#define LIST_SIZE  2048
+#define LIST_SIZE  10240
 
 // Number of data each transmission includes
 #define TRANSMIT_SIZE 8
@@ -121,8 +121,8 @@ void setup(void)
   }
   Serial.println("TOF2 online");
   
-  distanceSensor1.setDistanceModeShort();
-  distanceSensor2.setDistanceModeShort();
+  distanceSensor1.setDistanceModeLong();
+  distanceSensor2.setDistanceModeLong();
   Serial.println("setup over!");
   Serial.println("------------");
 
@@ -188,6 +188,13 @@ void motor_stop() {
   analogWrite(LEFT_RWD, 0);
 }
 
+void motor_brake() {
+  analogWrite(RIGHT_FWD, 0);
+  analogWrite(RIGHT_RWD, 40);
+  analogWrite(LEFT_FWD, 0);
+  analogWrite(LEFT_RWD, 40);
+}
+
 void motor_both(int duty) {
   short motor_signal;
   if (duty < 0) {
@@ -214,15 +221,8 @@ void motor_both(int duty) {
 }
 
 void motor_start_fwd() {
-    analogWrite(RIGHT_FWD, 70);
-    analogWrite(LEFT_FWD,  70);
-    analogWrite(RIGHT_RWD, 0);
-    analogWrite(LEFT_RWD,  0);  
-}
-
-void motor_slow_fwd() {
-    analogWrite(RIGHT_FWD, 40);
-    analogWrite(LEFT_FWD,  40);
+    analogWrite(RIGHT_FWD, 100);
+    analogWrite(LEFT_FWD,  100);
     analogWrite(RIGHT_RWD, 0);
     analogWrite(LEFT_RWD,  0);  
 }
@@ -382,24 +382,12 @@ handle_command()
 
     case 1:
       pid_running = 1;
-      // motor_start_fwd();
-      // delay(500);
-      // motor_slow_fwd();
       break;
-
+    
     case 2:
       pid_running = 0;
-      init_pid = 0;
       motor_stop();
       send_data();
-      break;
-    
-    case 3:
-      motor_start_fwd();
-      break;
-    
-    case 4:
-      motor_slow_fwd();
       break;
 
     default:
@@ -467,64 +455,37 @@ void loop(void)
 
           int distance1 = distanceSensor1.getDistance(); //Get the result of the measurement from the sensor
           int distance2 = distanceSensor2.getDistance(); //Get the result of the measurement from the sensor
-          if (distance1 == 0) {
-            distance1 = tof1_list[2];
-          }
+
           distanceSensor1.clearInterrupt();
           distanceSensor1.stopRanging();
           distanceSensor2.clearInterrupt();
           distanceSensor2.stopRanging();
-          
-
 
           //get time
-          int t_ms = millis();    
-          // char t_str[10];
-          // itoa(t_ms, t_str, 10);
-
-          // init tof if needed
-          if (init_pid == 0) {
-            tof1_list[2] = distance1;
-            tof1_list[1] = distance1;
-            tof1_list[0] = distance1;
-            pid_last_time = t_ms;
-            init_pid = 1;
-          } else {
-            tof1_list[0] = tof1_list[1];
-            tof1_list[1] = tof1_list[2];
-            tof1_list[2] = distance1;
-          }
-
-          // calculate err
-          float pid_dt;
-          pid_dt = (int)(t_ms - pid_last_time) / 1000.0;
-          //p
-          int pid_e;
-          pid_e = setpoint - distance1;
-          //i
-          pid_i += pid_e * pid_dt;
-          if(pid_i > 1000) {
-            pid_i = 1000;
-          } else if(pid_i < -1000) {
-            pid_i = -1000;
-          }
-          //d
-          pid_d = (tof1_list[1] - tof1_list[0]) / pid_dt;
-
-          //pwm signal
-          float pid_pwm;
-          pid_pwm = kp * pid_e + ki * pid_i - kd * pid_d;
-
-          // update current itr
-          pid_last_time = t_ms;
+          int t_ms = millis();   
           
-          motor_both(round(pid_pwm));
+          if (distance1 < 900) {
+            if(data_idx < LIST_SIZE) {
+              pwm_data_list[data_idx] = 1;
+              pwm_time_list[data_idx] = t_ms;
+            }
+            Serial.println(central.address());
+            Serial.println(distance1);
+            motor_brake();
+          } else {
+            if(data_idx < LIST_SIZE) {
+              pwm_data_list[data_idx] = 100;
+              pwm_time_list[data_idx] = t_ms;
+            }
+            motor_start_fwd();
+          }
 
           if(data_idx < LIST_SIZE) {
             tof_data_list[data_idx] = distance1;
             tof_time_list[data_idx] = t_ms;
-            data_idx += 1;
-          } 
+          }
+          
+          data_idx += 1;
 
         }
 
