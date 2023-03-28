@@ -1230,6 +1230,36 @@ if (currentMillis - previousMillis >= interval) {
                                  <img src="assets/lab7/ex_g_3.jpg" alt="l7exg3" style="width:60%"><br>
                                  <figcaption style="font-size: 16px;"><em>3x extrapolation per interval</em></figcaption><br>
 
+                                  <p style="text-align: left;padding: 0px 30px;">
+                                    To move the extrapolation on to the robot, we need to rewrite the kalman filter function in Arduino. For matrix manipulations, we would need the
+                                      <FONT COLOR=#b7282e>BasicLinearAlgebra</FONT> library. Following is a code snippet of my implementation, referencing a previous student Anya's
+                                      <a href="https://gist.githubusercontent.com/anyafp/c0a6a4d96aa05f449668c22ded394573/raw/f98007bce01b37ee916fbcf50d79bc7013015fcc/ece4960-lab7-kf-c.ino" target="_blank" style="color:blue"><u>code snippet</u></a>:
+                                  </p>
+
+                                  <div class="row" style="text-align: center;">
+                                   <div class="column2">
+                                     <img src="assets/lab7/kf_var.jpg" alt="l7kfvar" style="width:70%">
+                                     <figcaption style="font-size: 16px;"><em>Kalman filter initializations</em></figcaption>
+                                   </div>
+                                   <div class="column2">
+                                      <img src="assets/lab7/kf.jpg" alt="l7kf" style="width:100%">
+                                      <figcaption style="font-size: 16px;"><em>Kalman filter function</em></figcaption>
+                                   </div>
+                                 </div>
+                                 <br>
+
+                                   <p style="text-align: left;padding: 0px 30px;">
+                                       Similarly, I extrapolate the data using the estimated state once after each ToF sample, with 60ms of interval. That effectively speeds up 2x of my sampling rate,
+                                       and I would use either the estimated or sampled data to stop the car when necessary. Following is a video showing that my car was able to stop quickly enough
+                                       before hitting the wall even with the long range mode ToF (~10hz sampling rate) and my maximum speed of 100/255 PWM:
+                                  </p><br>
+
+                                 <video width=30%; controls>
+                                    <source src="assets/lab7/kf.mp4" type=video/mp4>
+                                 </video><br><br>
+
+
+
                              </details>
 
 
