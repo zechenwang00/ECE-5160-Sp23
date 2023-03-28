@@ -19,6 +19,9 @@
 #include <Wire.h>
 #include "SparkFun_VL53L1X.h" //Click here to get the library: http://librarymanager/All#SparkFun_VL53L1X
 
+#include <BasicLinearAlgebra.h>
+using namespace BLA;
+
 //Optional interrupt and shutdown pins.
 #define SHUTDOWN_PIN 5
 #define INTERRUPT_PIN 4
@@ -64,32 +67,100 @@ unsigned long currentMillis = 0;
 #define LEFT_FWD   14
 #define LEFT_RWD   15 
 #define OFFSET     25
-#define BK_OFFSET  40
+#define BK_OFFSET  60
 #define BASE_SPEED 50
 
 // 2 time lists using int and 2 data lists using short, using 12 * LIST_SIZE / 1024 RAM. Max LIST_SIZE ~= 30k.
 // can be improved if saving relative time using smaller data types, or only use 1 time list assuming synchronized
-#define LIST_SIZE  10240
+#define LIST_SIZE  2048
 
 // Number of data each transmission includes
 #define TRANSMIT_SIZE 8
 
 //////////// Global Variables ////////////
 short tof1_list[3] = {0,0,0};
-short tof_data_list[LIST_SIZE], pwm_data_list[LIST_SIZE];
-int   tof_time_list[LIST_SIZE], pwm_time_list[LIST_SIZE];
+short tof_data_list[LIST_SIZE], pwm_data_list[LIST_SIZE], kf_data_list[LIST_SIZE];
+int   tof_time_list[LIST_SIZE], pwm_time_list[LIST_SIZE], kf_time_list[LIST_SIZE];
 short data_idx = 0;
 
+// PID vars
 bool init_pid = 0;
-int setpoint = 300;
-float pid_i, pid_d;
+int setpoint = 900;
+// float pid_i, pid_d;
 long int pid_last_time = 0;
-float kp = 0.06;
-float ki = 0.01;
-float kd = 0.03;
-float pid_alpha = 0.5;
+// float kp = 0.06;
+// float ki = 0.01;
+// float kd = 0.03;
+// float pid_alpha = 0.5;
 bool pid_running = 0;
-bool car_running = 0;
+// bool car_running = 0;
+volatile float pwm_val=0.0;
+volatile int distance1, distance2;
+
+//////// KF Variables ////////
+
+float d_val = 0.000568;  // drag
+float m_val = 0.000193; // mass
+float kf_flag = 0;
+
+// A, B, C matrices
+Matrix<2,2> A_mat = { 0, 1,
+                      0, -d_val/m_val };
+Matrix<2,1> B_mat = { 0, 
+                      1/m_val };
+Matrix<1,2> C_mat = { -1, 0 };
+
+// Process and measurement noise
+Matrix<2,2> sig_u = { 20^2, 0,
+                      0, 20^2 };
+Matrix<1,1> sig_z = { 30^2 };
+
+// Discretize A & B
+float delta_t = 0.1;
+Matrix<2,2> I_mat = { 1, 0,
+                      0, 1      };
+Matrix<2,2> A_d   = { 1, 0.1,
+                      0, 0.690 };
+Matrix<2,1> B_d   = { 0,
+                      545.01143975  };
+
+// Initial states
+Matrix<2,2> sig   = { 20^2, 0,
+                      0, 5^2 }; // initial state uncertainty
+Matrix<2,1> x_val = { -2100, 
+                      0      }; // initial state output
+
+//////// KF Function ////////
+
+void kf() {
+
+  Matrix<2,1> x_p = A_d*x_val + B_d*pwm_val;
+  Matrix<2,2> sig_p = A_d*sig*(~A_d) + sig_u;
+
+  Matrix<1,1> y_curr = { (float)distance1 };
+  Matrix<1,1> y_m = y_curr - C_mat*x_p;
+  Matrix<1,1> sig_m = C_mat*sig_p*(~C_mat) + sig_z;
+
+  Matrix<1,1> sig_m_inv = sig_m;
+  Invert(sig_m_inv);
+
+  // Serial.print("y_curr: ");
+  // Serial.println(y_curr(0));
+  // Serial.print("x_p: ");
+  // Serial.print(x_p(0));
+  // Serial.println(x_p(1));
+  // Serial.print("y_m: ");
+  // Serial.print(y_m(0));
+  // Serial.println(y_m(1));
+
+  Matrix<2,1> kf_gain = sig_p*(~C_mat)*(sig_m_inv);
+
+  // Update
+  x_val = x_p + kf_gain*y_m;
+  sig = (I_mat - kf_gain*C_mat)*sig_p;
+}
+
+
 
 void setup(void)
 {
@@ -182,21 +253,32 @@ void setup(void)
 }
 
 void motor_stop() {
+  pwm_val = 0.0;
   analogWrite(RIGHT_FWD, 0);
   analogWrite(RIGHT_RWD, 0);
   analogWrite(LEFT_FWD, 0);
   analogWrite(LEFT_RWD, 0);
+  if (data_idx < LIST_SIZE) {
+    pwm_data_list[data_idx] = 0;
+    pwm_time_list[data_idx] = millis();
+  }
 }
 
 void motor_brake() {
+  pwm_val = -40/100.0;
   analogWrite(RIGHT_FWD, 0);
-  analogWrite(RIGHT_RWD, 35);
+  analogWrite(RIGHT_RWD, 60);
   analogWrite(LEFT_FWD, 0);
-  analogWrite(LEFT_RWD, 35);
+  analogWrite(LEFT_RWD, 60);
+  if (data_idx < LIST_SIZE) {
+    pwm_data_list[data_idx] = -40;
+    pwm_time_list[data_idx] = millis();
+  }
 }
 
 void motor_both(int duty) {
   short motor_signal;
+  pwm_val = -duty/100.0;
   if (duty < 0) {
     // negative means forward
     motor_signal = min(100, OFFSET + abs(duty));
@@ -214,15 +296,26 @@ void motor_both(int duty) {
   }
   // data recording
   if (data_idx < LIST_SIZE) {
-    pwm_data_list[data_idx] = motor_signal;
-    pwm_time_list[data_idx] = millis();
+    if (duty < 0) {
+      pwm_data_list[data_idx] = motor_signal;
+    }else {
+      pwm_data_list[data_idx] = -motor_signal;
+    }
+      pwm_time_list[data_idx] = millis();
   }
 
 }
 
 void motor_start_fwd() {
-    analogWrite(RIGHT_FWD, 100);
-    analogWrite(LEFT_FWD,  100);
+    analogWrite(RIGHT_FWD, 70);
+    analogWrite(LEFT_FWD,  70);
+    analogWrite(RIGHT_RWD, 0);
+    analogWrite(LEFT_RWD,  0);  
+}
+
+void motor_slow_fwd() {
+    analogWrite(RIGHT_FWD, 40);
+    analogWrite(LEFT_FWD,  40);
     analogWrite(RIGHT_RWD, 0);
     analogWrite(LEFT_RWD,  0);  
 }
@@ -266,6 +359,24 @@ void send_data() {
     // Serial.println(tx_estring_value.c_str());
     curr_idx += TRANSMIT_SIZE;
   }
+
+  // send KF
+  curr_idx = 0;
+  while ((curr_idx < LIST_SIZE) && !(curr_idx > data_idx)) {
+    tx_estring_value.clear();
+    tx_estring_value.append("K");
+    tx_estring_value.append("|");
+    for(char i = 0; i < TRANSMIT_SIZE; i++) {
+      tx_estring_value.append(kf_time_list[curr_idx+i]);
+      tx_estring_value.append("&");
+      tx_estring_value.append(kf_data_list[curr_idx+i]);
+      tx_estring_value.append(",");
+    }
+    tx_characteristic_string.writeValue(tx_estring_value.c_str());
+    // Serial.print("Sent back: ");
+    // Serial.println(tx_estring_value.c_str());
+    curr_idx += TRANSMIT_SIZE;
+  }
 }
 
 void
@@ -292,104 +403,22 @@ handle_command()
 
   switch (cmd_type) {
     case 0: {
-      // // sensor
-      // distanceSensor1.startRanging(); //Write configuration bytes to initiate measurement
-      // distanceSensor2.startRanging();
-
-      // Serial.println("waiting for data...");
-      // while ( !(distanceSensor1.checkForDataReady() && distanceSensor2.checkForDataReady()) )
-      // {
-      //   delay(1);
-      // }
-
-      // int distance1 = distanceSensor1.getDistance(); //Get the result of the measurement from the sensor
-      // int distance2 = distanceSensor2.getDistance(); //Get the result of the measurement from the sensor
-      // distanceSensor1.clearInterrupt();
-      // distanceSensor1.stopRanging();
-      // distanceSensor2.clearInterrupt();
-      // distanceSensor2.stopRanging();
-
-      // //get time
-      // long int t_ms = millis();    
-      // char t_str[10];
-      // itoa(t_ms, t_str, 10);
-
-      // // init tof if needed
-      // if (init_pid == 0) {
-      //   tof1_list[2] = distance1;
-      //   tof1_list[1] = distance1;
-      //   tof1_list[0] = distance1;
-        
-      //   pid_last_time = t_ms;
-      //   pid_i = 0;
-      //   pid_d = 0;
-        
-      //   memset(tof_data_list, 0, sizeof(tof_data_list));
-      //   memset(tof_time_list, 0, sizeof(tof_time_list));
-      //   memset(pwm_data_list, 0, sizeof(pwm_data_list));
-      //   memset(pwm_time_list, 0, sizeof(pwm_time_list));
-
-      //   init_pid = 1;
-
-      // } else {
-      //   tof1_list[0] = tof1_list[1];
-      //   tof1_list[1] = tof1_list[2];
-      //   tof1_list[2] = distance1;
-      // }
-
-      // // calculate err
-      // float pid_dt;
-      // pid_dt = (int)(t_ms - pid_last_time) / 1000.0;
-      // //p
-      // int pid_e;
-      // pid_e = setpoint - distance1;
-      // //i
-      // pid_i += pid_e * pid_dt;
-      // //d
-      // pid_d = pid_alpha * pid_d + (1 - pid_alpha) * (tof1_list[1] - tof1_list[0]) / pid_dt;
-
-      // //pwm signal
-      // float pid_pwm;
-      // pid_pwm = kp * pid_e + ki * pid_i + kd * pid_d;
-
-      // // update current itr
-      // pid_last_time = t_ms;
-
-      // tx_estring_value.clear();
-      // tx_estring_value.append(t_str);
-      // tx_estring_value.append(",");
-      // tx_estring_value.append(distance1);
-      // tx_estring_value.append(",");
-      // tx_estring_value.append(distance2);
-      // tx_estring_value.append(",");
-      // tx_estring_value.append(pid_dt);
-      // tx_estring_value.append(",");
-      // tx_estring_value.append(pid_e);
-      // tx_estring_value.append(",");
-      // tx_estring_value.append(pid_i);
-      // tx_estring_value.append(",");
-      // tx_estring_value.append(pid_d);
-      // tx_estring_value.append(",");
-      // tx_estring_value.append(pid_pwm);
-      // tx_estring_value.append("|");
-      // tx_characteristic_string.writeValue(tx_estring_value.c_str());
-
-      // Serial.print("Sent back: ");
-      // Serial.println(tx_estring_value.c_str());
-
       break;
     }
 
     case 1:
       pid_running = 1;
       break;
-    
+
     case 2:
       pid_running = 0;
+      init_pid = 0;
       motor_stop();
       send_data();
+      x_val = { 2000, 
+                0      }; // initial state output
       break;
-
+    
     default:
       Serial.print("Invalid Command Type: ");
       Serial.println(cmd_type);
@@ -443,49 +472,86 @@ void loop(void)
         // Read data
         read_data();
 
-        if (pid_running) {
+        if (pid_running) {          
           distanceSensor1.startRanging(); //Write configuration bytes to initiate measurement
-          distanceSensor2.startRanging();
+          // distanceSensor2.startRanging();
 
           // Serial.println("waiting for data...");
-          while ( !(distanceSensor1.checkForDataReady() && distanceSensor2.checkForDataReady()) )
+          while ( !distanceSensor1.checkForDataReady() )
           {
-            // delay(1);
+            // check if the most recent tof reading can be used for kf
+            if (kf_flag == 1) {
+              // call kf
+              kf();
+              kf_flag = 0;
+              // Serial.print("kf:  ");
+              // Serial.print(x_val(0));
+              // Serial.print(", ");
+              // Serial.println(x_val(1));
+
+              // store extrapolation
+              if(data_idx < LIST_SIZE) {
+                kf_data_list[data_idx] = round(abs(x_val(0)));
+                kf_time_list[data_idx] = millis()+60;
+              } 
+
+              // brake if needed
+              if (abs(x_val(0)) <= setpoint) {
+                motor_both(40);
+                // delay(200);
+                motor_both(0);
+                distanceSensor1.clearInterrupt();
+                distanceSensor1.stopRanging();
+                pid_running = 0;
+                Serial.println("kf Brake");
+                break;
+              }
+            }
           }
 
-          int distance1 = distanceSensor1.getDistance(); //Get the result of the measurement from the sensor
-          int distance2 = distanceSensor2.getDistance(); //Get the result of the measurement from the sensor
-
-          distanceSensor1.clearInterrupt();
-          distanceSensor1.stopRanging();
-          distanceSensor2.clearInterrupt();
-          distanceSensor2.stopRanging();
-
-          //get time
-          int t_ms = millis();   
-          
-          if (distance1 < 900) {
-            if(data_idx < LIST_SIZE) {
-              pwm_data_list[data_idx] = 1;
-              pwm_time_list[data_idx] = t_ms;
-            }
-            Serial.println(central.address());
+          if (pid_running) {
+            // read tof and set kf flag
+            distance1 = distanceSensor1.getDistance(); //Get the result of the measurement from the sensor
+            distanceSensor1.clearInterrupt();
+            distanceSensor1.stopRanging();
+            kf_flag = 1;
+            Serial.print("tof: ");
             Serial.println(distance1);
-            motor_brake();
-          } else {
-            if(data_idx < LIST_SIZE) {
-              pwm_data_list[data_idx] = 100;
-              pwm_time_list[data_idx] = t_ms;
+            
+            //get time
+            int t_ms = millis();    
+            // char t_str[10];
+            // itoa(t_ms, t_str, 10);
+
+            // // init tof if needed
+            // if (init_pid == 0) {
+            //   tof1_list[2] = distance1;
+            //   tof1_list[1] = distance1;
+            //   tof1_list[0] = distance1;
+            //   pid_last_time = t_ms;
+            //   init_pid = 1;
+            // } else {
+            //   tof1_list[0] = tof1_list[1];
+            //   tof1_list[1] = tof1_list[2];
+            //   tof1_list[2] = distance1;
+            // }
+            if (distance1 <= setpoint) {
+              motor_both(40);
+              // delay(200);
+              motor_both(0);
+              Serial.println("tof Brake");
+              pid_running = 0;
+            } else {
+              motor_both(-100);
             }
-            motor_start_fwd();
+
+            if(data_idx < LIST_SIZE) {
+              tof_data_list[data_idx] = distance1;
+              tof_time_list[data_idx] = t_ms;
+              data_idx += 1;
+            } 
           }
 
-          if(data_idx < LIST_SIZE) {
-            tof_data_list[data_idx] = distance1;
-            tof_time_list[data_idx] = t_ms;
-          }
-          
-          data_idx += 1;
 
         }
 

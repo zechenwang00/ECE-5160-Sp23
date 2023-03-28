@@ -1234,7 +1234,7 @@ if (currentMillis - previousMillis >= interval) {
                                     To move the extrapolation on to the robot, we need to rewrite the kalman filter function in Arduino. For matrix manipulations, we would need the
                                       <FONT COLOR=#b7282e>BasicLinearAlgebra</FONT> library. Following is a code snippet of my implementation, referencing a previous student Anya's
                                       <a href="https://gist.githubusercontent.com/anyafp/c0a6a4d96aa05f449668c22ded394573/raw/f98007bce01b37ee916fbcf50d79bc7013015fcc/ece4960-lab7-kf-c.ino" target="_blank" style="color:blue"><u>code snippet</u></a>:
-                                  </p>
+                                  </p><br>
 
                                   <div class="row" style="text-align: center;">
                                    <div class="column2">
@@ -1257,6 +1257,12 @@ if (currentMillis - previousMillis >= interval) {
                                  <video width=30%; controls>
                                     <source src="assets/lab7/kf.mp4" type=video/mp4>
                                  </video><br><br>
+
+                                <p style="text-align: left;padding: 0px 30px;">
+                                       Following is the visualization of the actual readings and the extrapolated data points during the run:
+                                  </p><br>
+                                  <img src="assets/lab7/kf_plot.jpg" alt="l7plot" style="width:60%">
+                                  <figcaption style="font-size: 16px;"><em>extrapolation visualization</em></figcaption>
 
 
 
