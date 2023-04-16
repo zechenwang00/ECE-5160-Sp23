@@ -73,7 +73,10 @@ short kf_idx = 0;
 
 // PID vars
 bool init_pid = 0;
-int setpoint = 1000;
+int setpoint = 800;
+int drive_time = 1050;
+int reverse_time = 1000;
+int start_time = 0;
 // float pid_i, pid_d;
 long int pid_last_time = 0;
 // float kp = 0.06;
@@ -119,7 +122,7 @@ Matrix<2,1> B_d   = { 0,
 // Initial states
 Matrix<2,2> sig   = { 20^2, 0,
                       0, 5^2 }; // initial state uncertainty
-Matrix<2,1> x_val = { 3000, 
+Matrix<2,1> x_val = { 2000, 
                       0      }; // initial state output
 
 //////// KF Function ////////
@@ -267,26 +270,12 @@ void motor_stop() {
   }
 }
 
-void motor_brake() {
-  pwm_val = -40/100.0;
-  analogWrite(RIGHT_FWD, 0);
-  analogWrite(RIGHT_RWD, 60);
-  analogWrite(LEFT_FWD, 0);
-  analogWrite(LEFT_RWD, 60);
-  if (motor_idx < LIST_SIZE) {
-    pwm_data_list[motor_idx] = -40;
-    pwm_time_list[motor_idx] = millis();
-    motor_idx += 1;
-  }
-
-}
-
 void motor_both(int duty) {
   short motor_signal;
   pwm_val = duty/100.0;
   if (duty < 0) {
     // negative means forward
-    motor_signal = min(255, abs(duty));
+    motor_signal = min(225, abs(duty));
     analogWrite(RIGHT_FWD, motor_signal-25);
     analogWrite(LEFT_FWD,  motor_signal);
     analogWrite(RIGHT_RWD, 0);
@@ -294,7 +283,7 @@ void motor_both(int duty) {
   } else {
     // positive means backwards :)
     motor_signal = min(255, abs(duty));
-    analogWrite(RIGHT_RWD, motor_signal-25);
+    analogWrite(RIGHT_RWD, motor_signal);
     analogWrite(LEFT_RWD,  motor_signal);
     analogWrite(RIGHT_FWD, 0);
     analogWrite(LEFT_FWD,  0);
@@ -312,20 +301,6 @@ void motor_both(int duty) {
     motor_idx += 1;
   }
 
-}
-
-void motor_start_fwd() {
-    analogWrite(RIGHT_FWD, 70);
-    analogWrite(LEFT_FWD,  70);
-    analogWrite(RIGHT_RWD, 0);
-    analogWrite(LEFT_RWD,  0);  
-}
-
-void motor_slow_fwd() {
-    analogWrite(RIGHT_FWD, 40);
-    analogWrite(LEFT_FWD,  40);
-    analogWrite(RIGHT_RWD, 0);
-    analogWrite(LEFT_RWD,  0);  
 }
 
 void send_data() {
@@ -418,6 +393,7 @@ handle_command()
       motor_stop();
       kf_reverse = 0;
       pid_running = 1;
+      start_time = millis();
       break;
 
     case 2:
@@ -425,7 +401,7 @@ handle_command()
       init_pid = 0;
       motor_stop();
       send_data();
-      x_val = { 3000, 
+      x_val = { 2000, 
                 0      }; // initial state output
       first_tof = 0;
       break;
@@ -484,82 +460,45 @@ void loop(void)
         read_data();
 
         if (pid_running) {          
-          distanceSensor1.startRanging(); //Write configuration bytes to initiate measurement
-          // distanceSensor2.startRanging();
+          // distanceSensor1.startRanging(); //Write configuration bytes to initiate measurement
+          // // distanceSensor2.startRanging();
 
-          // Serial.println("waiting for data...");
-          while ( !distanceSensor1.checkForDataReady() )
-          {
-            if (first_tof) {
-              // check kf interval
-              if ( (millis() - kf_last_time) >= (delta_t*1000) ) {
-                // call kf
-                kf();
-                kf_last_time = millis();
+          // // Serial.println("waiting for data...");
+          // while ( !distanceSensor1.checkForDataReady() && (millis() < (start_time + drive_time)) )
+          // {
 
-                // store estimate
-                if(kf_idx < LIST_SIZE) {
-                  kf_data_list[kf_idx] = round(abs(x_val(0)));
-                  kf_time_list[kf_idx] = millis();
-                  kf_idx += 1;
-                  Serial.print("kf:  ");
-                  Serial.print(x_val(0));
-                  Serial.print(", ");
-                  Serial.println(x_val(1));
-                } 
+          // }
+          
+          // // read tof and set kf flag
+          // distance1 = distanceSensor1.getDistance(); //Get the result of the measurement from the sensor
+          // distanceSensor1.clearInterrupt();
+          // distanceSensor1.stopRanging();
+          // Serial.print("tof: ");
+          // Serial.println(distance1);
 
-                // brake if needed
-                if (abs(x_val(0)) <= setpoint) {
-                  motor_both(255);
-                  distanceSensor1.clearInterrupt();
-                  distanceSensor1.stopRanging();
-                  pid_running = 0;
-                  kf_reverse = 1;
-                  kf_reverse_time = millis();
-                  Serial.println("kf Brake");
-                  break;
-                }
-              }
-            }
+          //get time
+          int t_ms = millis();    
 
+          if ((millis() >= (start_time + drive_time)) ) {
+            Serial.println("Brake");
+            pid_running = 0;
+            kf_reverse = 1;
+            kf_reverse_time = millis();
+          } else {
+            motor_both(-255);
           }
 
-          if (pid_running) {
-            // read tof and set kf flag
-            distance1 = distanceSensor1.getDistance(); //Get the result of the measurement from the sensor
-            distance1_temp = distance1;
-            distanceSensor1.clearInterrupt();
-            distanceSensor1.stopRanging();
-            Serial.print("tof: ");
-            Serial.println(distance1);
-            first_tof = 1;
-
-
-            //get time
-            int t_ms = millis();    
-
-            if (distance1 <= setpoint) {
-              motor_both(255);
-              Serial.println("tof Brake");
-              pid_running = 0;
-              kf_reverse = 1;
-              kf_reverse_time = millis();
-            } else {
-              motor_both(-255);
-            }
-
-            if(data_idx < LIST_SIZE) {
-              tof_data_list[data_idx] = distance1;
-              tof_time_list[data_idx] = t_ms;
-              data_idx += 1;
-            } 
-          }
-
+          // if(data_idx < LIST_SIZE) {
+          //   tof_data_list[data_idx] = distance1;
+          //   tof_time_list[data_idx] = t_ms;
+          //   data_idx += 1;
+          // } 
+          
 
         }
 
         if (kf_reverse) {
-          if ( (millis() - kf_reverse_time) > 2000 ) {
+          if ( (millis() - kf_reverse_time) > reverse_time ) {
             kf_reverse = 0;
             motor_stop();
           } else {

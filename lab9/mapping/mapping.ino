@@ -86,73 +86,6 @@ volatile float pwm_val=0.0;
 volatile int distance1, distance2;
 volatile float distance1_temp;
 
-//////// KF Variables ////////
-
-float d_val = 0.000568;  // drag
-float m_val = 0.000193; // mass
-int   kf_last_time = 0;
-bool  kf_reverse = 0;
-int   kf_reverse_time = 0;
-bool  first_tof = 0;
-
-// A, B, C matrices
-Matrix<2,2> A_mat = { 0, 1,
-                      0, -d_val/m_val };
-Matrix<2,1> B_mat = { 0, 
-                      1/m_val };
-Matrix<1,2> C_mat = { 1, 0 };
-
-// Process and measurement noise
-Matrix<2,2> sig_u = { 40^2, 0,
-                      0, 40^2 };
-Matrix<1,1> sig_z = { 30^2 };
-
-// Discretize A & B
-float delta_t = 0.02;
-Matrix<2,2> I_mat = { 1, 0,
-                      0, 1      };
-Matrix<2,2> A_d   = { 1, 0.02,
-                      0, 0.87 };
-Matrix<2,1> B_d   = { 0,
-                      600.8  };
-
-// Initial states
-Matrix<2,2> sig   = { 20^2, 0,
-                      0, 5^2 }; // initial state uncertainty
-Matrix<2,1> x_val = { 3000, 
-                      0      }; // initial state output
-
-//////// KF Function ////////
-
-void kf() {
-
-  Matrix<2,1> x_p = A_d*x_val + B_d*pwm_val;
-  Matrix<2,2> sig_p = A_d*sig*(~A_d) + sig_u;
-
-  Matrix<1,1> y_curr = { (float)distance1_temp };
-  Matrix<1,1> y_m = y_curr - C_mat*x_p;
-  Matrix<1,1> sig_m = C_mat*sig_p*(~C_mat) + sig_z;
-
-  Matrix<1,1> sig_m_inv = sig_m;
-  Invert(sig_m_inv);
-
-  // Serial.print("y_curr: ");
-  // Serial.println(y_curr(0));
-  // Serial.print("x_p: ");
-  // Serial.print(x_p(0));
-  // Serial.println(x_p(1));
-  // Serial.print("y_m: ");
-  // Serial.print(y_m(0));
-  // Serial.println(y_m(1));
-
-  Matrix<2,1> kf_gain = sig_p*(~C_mat)*(sig_m_inv);
-
-  // Update
-  x_val = x_p + kf_gain*y_m;
-  sig = (I_mat - kf_gain*C_mat)*sig_p;
-  distance1_temp = x_val(0);
-}
-
 
 
 void setup(void)
@@ -252,6 +185,12 @@ void setup(void)
   // distanceSensor1.stopRanging();
   // x_val(0) = distance1;
 
+  // init mem
+  memset(tof_data_list, 0, sizeof(tof_data_list));
+  memset(tof_time_list, 0, sizeof(tof_time_list));
+  memset(pwm_data_list, 0, sizeof(pwm_data_list));
+  memset(pwm_time_list, 0, sizeof(pwm_time_list));
+
 }
 
 void motor_stop() {
@@ -263,6 +202,28 @@ void motor_stop() {
   if (motor_idx < LIST_SIZE) {
     pwm_data_list[motor_idx] = 0;
     pwm_time_list[motor_idx] = millis();
+    motor_idx += 1;
+  }
+}
+
+void motor_rotate(int direction) {
+  if (direction > 0) {
+    // clockwise
+    analogWrite(RIGHT_FWD, 0);
+    analogWrite(RIGHT_RWD, 200);
+    analogWrite(LEFT_FWD, 200);
+    analogWrite(LEFT_RWD, 0);
+  } else {
+    analogWrite(RIGHT_FWD, 200);
+    analogWrite(RIGHT_RWD, 0);
+    analogWrite(LEFT_FWD, 0);
+    analogWrite(LEFT_RWD, 200);
+  }
+  if (motor_idx < LIST_SIZE) {
+    pwm_data_list[motor_idx] = 200;
+    
+    pwm_time_list[motor_idx] = millis();
+
     motor_idx += 1;
   }
 }
@@ -416,18 +377,54 @@ handle_command()
 
     case 1:
       motor_stop();
-      kf_reverse = 0;
-      pid_running = 1;
+
+      for (short i = 0; i < 21; i++) {
+        motor_rotate(1);
+        delay(100);
+        motor_stop();
+        delay(100);
+
+        distanceSensor1.startRanging();
+        while ( !distanceSensor1.checkForDataReady() )
+        {
+
+        }
+
+        // read distance
+        distance1 = distanceSensor1.getDistance(); //Get the result of the measurement from the sensor
+        distance1_temp = distance1;
+        distanceSensor1.clearInterrupt();
+        distanceSensor1.stopRanging();
+        Serial.print("tof: ");
+        Serial.println(distance1);
+
+        //get time
+        int t_ms = millis();
+
+        if(data_idx < LIST_SIZE) {
+          tof_data_list[data_idx] = distance1;
+          tof_time_list[data_idx] = t_ms;
+          data_idx += 1;
+        }
+
+        delay(100);
+      }
+
+      motor_stop();
+
       break;
 
     case 2:
-      pid_running = 0;
-      init_pid = 0;
+      // pid_running = 0;
+      // init_pid = 0;
       motor_stop();
       send_data();
-      x_val = { 3000, 
-                0      }; // initial state output
-      first_tof = 0;
+      memset(tof_data_list, 0, sizeof(tof_data_list));
+      memset(tof_time_list, 0, sizeof(tof_time_list));
+      memset(pwm_data_list, 0, sizeof(pwm_data_list));
+      memset(pwm_time_list, 0, sizeof(pwm_time_list));
+      motor_idx = 0;
+      data_idx  = 0;
       break;
     
     default:
@@ -490,37 +487,6 @@ void loop(void)
           // Serial.println("waiting for data...");
           while ( !distanceSensor1.checkForDataReady() )
           {
-            if (first_tof) {
-              // check kf interval
-              if ( (millis() - kf_last_time) >= (delta_t*1000) ) {
-                // call kf
-                kf();
-                kf_last_time = millis();
-
-                // store estimate
-                if(kf_idx < LIST_SIZE) {
-                  kf_data_list[kf_idx] = round(abs(x_val(0)));
-                  kf_time_list[kf_idx] = millis();
-                  kf_idx += 1;
-                  Serial.print("kf:  ");
-                  Serial.print(x_val(0));
-                  Serial.print(", ");
-                  Serial.println(x_val(1));
-                } 
-
-                // brake if needed
-                if (abs(x_val(0)) <= setpoint) {
-                  motor_both(255);
-                  distanceSensor1.clearInterrupt();
-                  distanceSensor1.stopRanging();
-                  pid_running = 0;
-                  kf_reverse = 1;
-                  kf_reverse_time = millis();
-                  Serial.println("kf Brake");
-                  break;
-                }
-              }
-            }
 
           }
 
@@ -532,21 +498,10 @@ void loop(void)
             distanceSensor1.stopRanging();
             Serial.print("tof: ");
             Serial.println(distance1);
-            first_tof = 1;
 
 
             //get time
-            int t_ms = millis();    
-
-            if (distance1 <= setpoint) {
-              motor_both(255);
-              Serial.println("tof Brake");
-              pid_running = 0;
-              kf_reverse = 1;
-              kf_reverse_time = millis();
-            } else {
-              motor_both(-255);
-            }
+            int t_ms = millis();
 
             if(data_idx < LIST_SIZE) {
               tof_data_list[data_idx] = distance1;
@@ -556,15 +511,6 @@ void loop(void)
           }
 
 
-        }
-
-        if (kf_reverse) {
-          if ( (millis() - kf_reverse_time) > 2000 ) {
-            kf_reverse = 0;
-            motor_stop();
-          } else {
-            motor_both(255);
-          }
         }
 
       }
