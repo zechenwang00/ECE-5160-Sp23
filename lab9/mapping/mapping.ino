@@ -378,7 +378,7 @@ handle_command()
     case 1:
       motor_stop();
 
-      for (short i = 0; i < 21; i++) {
+      for (short i = 0; i < 19; i++) {
         motor_rotate(1);
         delay(100);
         motor_stop();
@@ -392,7 +392,6 @@ handle_command()
 
         // read distance
         distance1 = distanceSensor1.getDistance(); //Get the result of the measurement from the sensor
-        distance1_temp = distance1;
         distanceSensor1.clearInterrupt();
         distanceSensor1.stopRanging();
         Serial.print("tof: ");

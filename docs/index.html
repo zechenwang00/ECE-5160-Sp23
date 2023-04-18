@@ -1365,6 +1365,79 @@ if (currentMillis - previousMillis >= interval) {
                                  
                               </details>
 
+                              <details>
+                                 <summary style="text-align:left;font-weight: bold; color:#fc4311;font-size: 24px;text-decoration:underline;">Lab 9: Mapping</summary>
+                                 
+                                 <h4 style="text-align:left;font-weight: bold;"><br><u>Introduction</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    In this lab our goal is to create a 2D mapping of an enclosed region by sampling ToF sensor readings while spinning the car around. The data collected
+                                    will be visualized as a point cloud diagram and be used as a reference compared to a ground truth map.
+                                 </p>
+
+                                 <h4 style="text-align:left;font-weight: bold;"><br><u>Task: Open Loop control</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    In this lab I used open loop control with is to code the robot to spin at a constant angular increment for a certain number of times. 
+                                    The number of spins is decided arbitrarily and heavily depends on the battery voltage levels and ground friction conditions, etc.
+
+                                    I decided to let the motor spin at PWM <FONT COLOR=#b7282e>200/255</FONT> for <FONT COLOR=#b7282e>100 ms</FONT>. By measurement, it approximately turns
+                                    <FONT COLOR=#b7282e>19 deg</FONT> each time, and <FONT COLOR=#b7282e>19</FONT> such turns will make it 360 degrees. My program simply lets the robot turns
+                                    by 19 degrees, stop to take a ToF measurement, and repeat until a full circle is complete. A code snippet is included below and a video demonstration follows.
+                                 </p><br>
+
+                                 <img src="assets/lab9/code.jpg" alt="l9code" style="width:60%">
+                                 <figcaption style="font-size: 16px;"><em>Open loop control</em></figcaption><br>
+
+                                 <video width=40%; controls>
+                                    <source src="assets/lab9/spin.mp4" type=video/mp4>
+                                 </video><br><br>
+
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    By sampling at four different locations in the designated region, we will have collected enough data to plot the point cloud graph.
+                                    The robot performs a complete spin at each of the location, transmit the data back, and wait for a next command to collect the next group of data.
+                                    The four locations are (5, -3), (-3, -2), (0, 3), (5, 3). A sample ToF data looks like this:
+                                 </p><br>
+
+                                 <img src="assets/lab9/tof.jpg" alt="l9tof" style="width:40%">
+                                 <figcaption style="font-size: 16px;"><em>Tof data time vs distance</em></figcaption><br>
+    
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    <a href="assets/lab9/lab9.ipynb" download target="_blank" style="color:blue"><u>My Jupyter Notebook file for data collection</u></a><br>
+                                    It will be more intuitive to transform the data to polar representations to better visualize what are we getting by spinning around. Following are four 
+                                    polar graphs corresponding to the four specified coordinates. 
+                                 </p><br>
+                                 
+                                 <img src="assets/lab9/1.jpg" alt="l9p1" style="width:30%">
+                                 <figcaption style="font-size: 16px;"><em>polar graph at (5, -3)</em></figcaption><br>
+
+                                 <img src="assets/lab9/2.jpg" alt="l9p2" style="width:30%">
+                                 <figcaption style="font-size: 16px;"><em>polar graph at (-3, -2)</em></figcaption><br>
+
+                                 <img src="assets/lab9/3.jpg" alt="l9p3" style="width:30%">
+                                 <figcaption style="font-size: 16px;"><em>polar graph at (0, 3)</em></figcaption><br>
+
+                                 <img src="assets/lab9/4.jpg" alt="l9p4" style="width:30%">
+                                 <figcaption style="font-size: 16px;"><em>polar graph at (5, 3)</em></figcaption><br>
+
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    By saving these data using the python library pickle, I later loaded them into another
+                                    <a href="assets/lab9/lab9_data.ipynb" download target="_blank" style="color:blue"><u>jupyter notebook</u></a>
+                                    for data visualizaiton. Specifically, as explained in the introduction, I would need to put data into a 2D map using Cartesian representations.
+                                    The transformation of two coordinates systems is simple: we use cosine and sine functions multiplied by distance to calculate the x, y displacements
+                                    of each point from its origin. By proper scalling and offseting, I ended up with the following map:
+                                 </p><br>
+
+                                 <img src="assets/lab9/cloud.jpg" alt="l9c" style="width:60%">
+                                 <figcaption style="font-size: 16px;"><em>2D map estimated by ToF readings</em></figcaption><br>
+
+                                 
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    It is obvious that some of the data points were noises or errors, which is inevitable for sensors. But overall, we can see that most of the sampled points
+                                    matches the ground truth map (especially the walls) and provided a good estimate of the area. To further improve the result, we need to increase the number of
+                                    samples, maybe letting the robot turn more cycles and using smaller increments to increase precision. Also angular position/velocity PID control could be a 
+                                    much better way to collect more accurate data and match the ToF measurements with their exact angular positions.
+                                 </p><br>
+
+                              </details>
 
 
 
