@@ -1353,7 +1353,7 @@ nav.main-menu {
 ---------------------------------------------------------------------*/
 
 .header {
-	background: #fc4311;
+	background: #b7282e;
 	padding: 40px 0px;
 	padding-bottom: 35px;
 }
@@ -1482,7 +1482,7 @@ color: #050303;
 line-height: 46px;
 margin-bottom: 0px;
 margin-bottom: 20px;
-border-bottom: #fc4311 solid 1px;
+border-bottom: #b7282e solid 1px;
 width: 242px;
 margin: 0 auto;
 margin-bottom: 0px;
@@ -1511,7 +1511,7 @@ margin-bottom: 20px;
 #main_slider .carousel-control-next:hover,
 #main_slider .carousel-control-prev:focus,
 #main_slider .carousel-control-next:focus {
-	background: #fc4311;
+	background: #b7282e;
 	color: #fff;
 }
 
@@ -1547,7 +1547,7 @@ margin-bottom: 20px;
 }
 
 .read-more a:hover {
-	background: #fc4311;
+	background: #b7282e;
     border-radius: 25px;
     transition: ease-in all 0.5s;
 }
@@ -1610,7 +1610,7 @@ margin-bottom: 20px;
 
 .service .service-box .hoverle a {
 	padding: 5px 30px;
-	color: #fc4311;
+	color: #b7282e;
    font-size: 17px;
 }
 
@@ -1623,9 +1623,9 @@ margin-bottom: 20px;
 	padding: 0px 0px 6px 0px;
 	font-size: 40px;
 	font-weight: bold;
-	color: #fc4311;
+	color: #b7282e;
 	line-height: 46px;
-	border-bottom: #fc4311 solid 1px;
+	border-bottom: #b7282e solid 1px;
 	width: 210px;
 	margin: 0 auto;
 	margin-bottom: 0px;
@@ -1641,7 +1641,7 @@ margin-bottom: 20px;
 	text-align: center;
 	display: flex;
 	justify-content: center;
-	background: #fc431199;
+	background: #b7282e;
 	align-items: center;
 	margin: 0 15px;
 	border-radius: 20px;
@@ -1742,7 +1742,7 @@ img.zoom {
 	font-weight: bold;
 	color: #050303;
 	line-height: 46px;
-	border-bottom: #fc4311 solid 1px;
+	border-bottom: #b7282e solid 1px;
 	width: 410px;
 	margin: 0 auto;
 	margin-bottom: 0px;
@@ -1797,8 +1797,8 @@ margin-top: 50px;
 }
 
 .about a:hover {
-	border: #fc4311 solid 1px;
-    background: #fc4311;
+	border: #b7282e solid 1px;
+    background: #b7282e;
     border-radius: 25px;
     transition: ease-in all 0.5s;
 }
@@ -1822,7 +1822,7 @@ margin-top: 50px;
      line-height: 50px;
      display: inline-block;
      position: relative;
-     border-bottom: #fc4311 solid 1px;
+     border-bottom: #b7282e solid 1px;
 width: 209px;
 margin: 0 auto;
 margin-bottom: 0px;
@@ -1861,7 +1861,7 @@ margin-bottom: 20px;
      left: 0px;
      position: absolute;
      margin-left: 15px;
-     background: #fc4311;
+     background: #b7282e;
      padding: 10px 30px;
      color: #fff;
 }
@@ -1877,7 +1877,7 @@ margin-bottom: 20px;
      padding: 15px 0px;
 }
 .blog .blog-box .travel span {
-     color: #fc4311;
+     color: #b7282e;
      display: inline-block;
 }
 .blog .blog-box .travel p {
@@ -1885,10 +1885,10 @@ margin-bottom: 20px;
      padding-left: 15px;
 }
 .like {
-     color: #fc4311;
+     color: #b7282e;
 }
 .Comment {
-     color: #fc4311;
+     color: #b7282e;
 }
 .contact_form {
      background: #114c7d;
@@ -1967,8 +1967,8 @@ margin-bottom: 20px;
 }
 
 .contact .contact .send:hover {
-	background-color: #fc4311;
-	border: #fc4311 solid 1px;
+	background-color: #b7282e;
+	border: #b7282e solid 1px;
 	color: #fff;
     border-radius: 25px;
     transition: ease-in all 0.5s;
@@ -1979,7 +1979,7 @@ margin-bottom: 20px;
 }
 
 .footer {
-	background: #fc4311;
+	background: #b7282e;
 	padding-top: 55px;
 }
 
@@ -2086,14 +2086,14 @@ ul.contant_icon li img {
 	padding: 4px 23px;
 border: #000 solid 1px;
 background: #000;
-color: #fc4311;
+color: #b7282e;
 font-weight: 500;
 font-size: 17px;}
 
 .footer .address .submit-btn:hover {
 	background: #fff;
     border: #fff solid 1px;
-    color: #fc4311;
+    color: #b7282e;
 }
 
 .copyright {
@@ -2193,7 +2193,7 @@ font-size: 17px;}
 #myCarousel .carousel-control-next:hover,
 #myCarousel .carousel-control-prev:focus,
 #myCarousel .carousel-control-next:focus {
-	background: #fc4311;
+	background: #b7282e;
 	color: #fff;
 }
 
