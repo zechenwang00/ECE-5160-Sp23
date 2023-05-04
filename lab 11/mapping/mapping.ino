@@ -378,9 +378,12 @@ handle_command()
     case 1:
       motor_stop();
 
-      for (short i = 0; i < 18; i++) {
+      delay(1000);
+      tx_estring_value.clear();
+
+      for (int i = 0; i < 18; i++) {
         motor_rotate(-1);
-        delay(100);
+        delay(120);
         motor_stop();
         delay(100);
 
@@ -391,23 +394,26 @@ handle_command()
         }
 
         // read distance
+        char d_str[10];
+        char i_str[2];
         distance1 = distanceSensor1.getDistance(); //Get the result of the measurement from the sensor
         distanceSensor1.clearInterrupt();
         distanceSensor1.stopRanging();
         Serial.print("tof: ");
         Serial.println(distance1);
 
-        //get time
-        int t_ms = millis();
 
-        if(data_idx < LIST_SIZE) {
-          tof_data_list[data_idx] = distance1;
-          tof_time_list[data_idx] = t_ms;
-          data_idx += 1;
-        }
+        tx_estring_value.append(itoa(distance1, d_str, 10));
+        tx_estring_value.append(",");
+        tx_estring_value.append(itoa(i, i_str, 10));
+        tx_estring_value.append("|");
 
         delay(100);
       }
+      
+      tx_characteristic_string.writeValue(tx_estring_value.c_str());
+      Serial.print("Sent back: ");
+      Serial.println(tx_estring_value.c_str());
 
       motor_stop();
 

@@ -1444,7 +1444,7 @@ if (currentMillis - previousMillis >= interval) {
                                  
                                  <h4 style="text-align:left;font-weight: bold;"><br><u>Introduction</u></h4>
                                  <p style="text-align: left;padding: 0px 30px;">
-                                    In this lab, our goal is to implement grid localization using Bayes filter. Specifically, we need to program a perdiction step and an update step in every
+                                    In this lab, our goal is to implement grid localization using Bayes filter. Specifically, we need to program a prediction step and an update step in every
                                     iteration of the Bayes filter in order to update the robot's estimated position based on sensor readings.
                                  </p>
 
@@ -1558,6 +1558,125 @@ if (currentMillis - previousMillis >= interval) {
                                     <a href="https://pages.github.coecis.cornell.edu/rc627/ECE-4960/lab11.html" target="_blank" style="color:blue"><u>Ryan</u></a>
                                     really helped me a lot and are very good references!
                                  </p>
+                              
+                              </details>
+
+                              <details>
+                                 <summary style="text-align:left;font-weight: bold; color:#b7282e;font-size: 24px;text-decoration:underline;">Lab 11: Localization(real)</summary>
+                                 
+                                 <h4 style="text-align:left;font-weight: bold;"><br><u>Introduction</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    In this lab, our goal is to implement grid localization using Bayes filter in a real envrionment. The algorithm is the same as the previous lab where we did
+                                    simulation, and the only difference is that we are now reading the ToF sensors for the update step. I will be comibining my codes from Lab 9 (Artemis side) and
+                                    Lab 10 (PC side) to complete this lab assignment.
+                                 </p>
+
+                                 <h4 style="text-align:left;font-weight: bold;"><br><u>Task: Localization</u></h4><br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    <b><FONT COLOR=#b7282e>PC Side Implementation</FONT></b><br>
+                                    We have already implemented the Bayes filter in the previous lab, and details could be referenced from the previous lab writeup. In this lab, the same Bayes filter
+                                    algorithm is used for localization and the update step function is now given. We would want to first test the filter in an simulated envrionment to make sure it works
+                                    properly.
+                                 </p>
+
+                                 <img src="assets/lab11/sim.jpg" alt="l11sim" style="width:50%">
+                                 <figcaption style="font-size: 16px;"><em>Simulation Plot</em></figcaption><br>
+                                    
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    After verifying the Bayes filter implementation, we would proceed to work on the real robot. Now instead of getting data from the simulated envrionment, we would like to send a command
+                                    to the robot to let it turn around to get 18 ToF readings and send them back. The code implementation is included below, which is a slight variation of the BLE callback
+                                    functions I've been using for previous labs. I decided not to use callback functions in this lab because we know that we are exactly expecting one string of 18 data readings.
+                                 </p><br>
+                                                                     
+                                 <img src="assets/lab11/pc.jpg" alt="l11pc" style="width:80%">
+                                 <figcaption style="font-size: 16px;"><em>PC side observation function</em></figcaption><br>
+
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    The update step code is partially given already, and with the above function defined, we should be able to easily perform the update step.
+                                 </p><br>
+
+                                 <img src="assets/lab11/update.jpg" alt="l10bf" style="width:50%">
+                                 <figcaption style="font-size: 16px;"><em>Update step code</em></figcaption><br>
+
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    <b><FONT COLOR=#b7282e>Artemis Side Implementation</FONT></b><br>
+                                    Similar to what I have done in lab 9, I used open loop control to let the robot rotate 18 times and try to make it as close to 360 degrees as possible. Slight inaccuracies
+                                    may exist, such as turning a little too much overall or differences of angular displacements between rotations. But since our algorithm already accounted for inaccuracies in
+                                    readings, we should be fine working with those data. The Code implementation involves using a for loop, and in each iteration we get a reading from the ToF sensor, perform
+                                    a rotation, and record the data. Repeating this 18 times, we will have a string with all data ready to be sent back to PC.
+                                 </p><br>
+
+                                 <img src="assets/lab11/ar.jpg" alt="l10cc" style="width:60%">
+                                 <figcaption style="font-size: 16px;"><em>Artemis Code</em></figcaption><br>
+
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    <b><FONT COLOR=#b7282e>Testing</FONT></b><br>
+                                    With both the PC side and the Artemis side configured. We are ready to do some testings. We have for coordinates to test and we will perform an update step at each of the locations.
+                                    I borrowed my lab parter Zhongqi's laptop for testing since I had a bluetooth connectivity issue in WSL.<br><br>
+
+                                    The first test point is <FONT COLOR=#b7282e>(5,-3,0)</FONT>.
+                                 </p><br>
+
+                                 <img src="assets/lab11/(5,-3).png" alt="l115-3p" style="width:60%">
+                                 <figcaption style="font-size: 16px;"><em>(5,-3) plotter</em></figcaption><br>
+
+                                 <img src="assets/lab11/5-3.jpg" alt="l115-3d" style="width:60%">
+                                 <figcaption style="font-size: 16px;"><em>(5,-3) data</em></figcaption><br>
+
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    On the graph, we can see that the blue dot (belief) actually covered the green dot (ground truth), meaning that our belief location exactly matches the ground truth location. Also,
+                                    we could see from the output that the bel probability was 0.97, meaning that we have very high confidence in this belief.
+                                 </p><br><br>
+
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    The second test point is <FONT COLOR=#b7282e>(5,3,0)</FONT>.
+                                 </p><br>
+
+                                 <img src="assets/lab11/(5,3).png" alt="l1153p" style="width:60%">
+                                 <figcaption style="font-size: 16px;"><em>(5,3) plotter</em></figcaption><br>
+
+                                 <img src="assets/lab11/53.jpg" alt="l1153d" style="width:60%">
+                                 <figcaption style="font-size: 16px;"><em>(5,3) data</em></figcaption><br>
+
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    This time our belief (blue) is a little away from the ground truth point (green). However, the error is still within an acceptable range. Like I mentioned before, it could be caused by
+                                    the inevitable inaccuracies by open loop control.
+                                 </p><br><br>
+
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    The third test point is <FONT COLOR=#b7282e>(0,3,0)</FONT>.
+                                 </p><br>
+
+                                 <img src="assets/lab11/(0,3).png" alt="l1103p" style="width:60%">
+                                 <figcaption style="font-size: 16px;"><em>(0,3) plotter</em></figcaption><br>
+
+                                 <img src="assets/lab11/03.jpg" alt="l1103d" style="width:60%">
+                                 <figcaption style="font-size: 16px;"><em>(0,3) data</em></figcaption><br>
+
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    Similarly, this belief (blue) is also a little off the ground truth (green). We can also see that the pose is 90 degrees, which should be 0 for the ground truth.
+                                 </p><br><br>
+
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    The fourth test point is <FONT COLOR=#b7282e>(-3,-2,0)</FONT>.
+                                 </p><br>
+
+                                 <img src="assets/lab11/(-3,-2).png" alt="l11-3-2p" style="width:60%">
+                                 <figcaption style="font-size: 16px;"><em>(-3,-2) plotter</em></figcaption><br>
+
+                                 <img src="assets/lab11/-3-2.jpg" alt="l11-3-2d" style="width:60%">
+                                 <figcaption style="font-size: 16px;"><em>(5,3) data</em></figcaption><br>
+
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    The fourth test point's belief (blue) again overlaps the ground truth (green). It is also a better prediciton compared to the previous one as we can see the pose is 
+                                    estimated to be 30 degrees, which is closer to 0.
+                                 </p><br>
+
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    To wrap up, due to the inherent noise in ToF readings and the inaccuracies of open loop control, our bayes filter was performing just OK. ToF readings may come noisy as
+                                    some measurements may be from close to edges of walls as the robot rotates, which can lead to ambiguous readings. Open loop control is also not the best choice for accuracy,
+                                    and the Bayes filter's performance could defenitely be improved if used PID angular control or if we included gyroscope readings as a reference.
+                                 </p><br>
                               
                               </details>
 
