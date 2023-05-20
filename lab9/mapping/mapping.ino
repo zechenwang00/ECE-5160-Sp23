@@ -378,11 +378,11 @@ handle_command()
     case 1:
       motor_stop();
 
-      for (short i = 0; i < 18; i++) {
+      for (short i = 0; i < 20; i++) {
         motor_rotate(-1);
-        delay(100);
+        delay(150);
         motor_stop();
-        delay(100);
+        delay(20);
 
         distanceSensor1.startRanging();
         while ( !distanceSensor1.checkForDataReady() )

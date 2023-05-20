@@ -82,7 +82,6 @@ float pitch_a = 0, roll_a = 0, pitch_g = 0, roll_g = 0, yaw_g = 0, dt =0, pitch 
 float Xm = 0, Ym =0, Zm = 0, x = 0, y = 0;
 unsigned long last_time = millis();
 double pitch_a_LPF[] = {0, 0};
-double pitch_a_LPF[] = {0, 0};
 const int n=1;
 volatile bool ranging = 0;
 const float alpha = 0.2;

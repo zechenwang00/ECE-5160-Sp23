@@ -1680,6 +1680,61 @@ if (currentMillis - previousMillis >= interval) {
                               
                               </details>
 
+                              <details>
+                                 <summary style="text-align:left;font-weight: bold; color:#b7282e;font-size: 24px;text-decoration:underline;">Lab 12: Planning and Execution</summary>
+                                 
+                                 <h4 style="text-align:left;font-weight: bold;"><br><u>Introduction</u></h4>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    In this lab, our goal is to navigate the rbbot though multiple waypoints within an enclosed region in the real world, including the following waypoints:
+                                 </p><br>
+                                 
+                                 <img src="assets/lab12/waypoints.jpg" alt="l12wp" style="width:20%">
+                                 <figcaption style="font-size: 16px;"><em>Navigation Waypoints</em></figcaption><br>
+
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    In order to accomplish the task, I decided to use a combination of open-loop control with and without ToF readings which have been proved functional in previous labs.
+                                    I collaborated with Zhongqi and Michael on this lab including discussing implementation, testing, and recording the results.
+                                 </p><br>
+
+
+                                 <h4 style="text-align:left;font-weight: bold;"><br><u>Task: Navigation</u></h4><br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    We decided to start with open-loop control first and proceed to use ToF readings for better accuracy. We found out that for the first few waypoints, 
+                                    open-loop control can execute the paths pretty reliably. For the later few points, we may need ToF readings so that the robot could stop accurately
+                                    brefore hitting the walls. The following picture is the trajectory we will be executing, and the points correspond to the waypoint coordinates above.
+                                 </p>
+
+                                 <img src="assets/lab12/traj.png" alt="l12traj" style="width:50%">
+                                 <figcaption style="font-size: 16px;"><em>Trajectory</em></figcaption><br>
+                                    
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    For points 1-5 and 8-9, I decided to use open-loop control without ToF. For 6-7, I decided to use ToF. Following is the
+                                    code implementation.
+                                 </p><br>
+                                                                     
+                                 <img src="assets/lab12/1.png" alt="l12_1" style="width:30%">
+                                 <figcaption style="font-size: 16px;"><em>code snippet 1</em></figcaption><br>
+
+                                 <img src="assets/lab12/2.png" alt="l12_2" style="width:70%">
+                                 <figcaption style="font-size: 16px;"><em>code snippet 2</em></figcaption><br>
+
+                                 <img src="assets/lab12/3.png" alt="l12_3" style="width:30%">
+                                 <figcaption style="font-size: 16px;"><em>code snippet 3</em></figcaption><br>
+
+                                 <h4 style="text-align:left;font-weight: bold;"><br><u>Demonstration</u></h4><br>
+                                 <p style="text-align: left;padding: 0px 30px;">
+                                    Following is the demonstration video of my run. There are still inaccuracies because of the open-loop control, but with the ToF readings I managed
+                                    to complete the run from the start to the end without hitting obstacles. One thing I could improve is to include orientation PID since one of the 
+                                    greatest source of error is from turning.
+                                 </p>
+
+                                 <video width=80%; controls>
+                                    <source src="assets/lab12/demo.mp4" type=video/mp4>
+                                 </video><br><br><br><br>
+
+                              
+                              </details>
+
 
 
 <!--                          <img class="img-rounded" src="images/penguin.jpg" alt="Generic placeholder image" style="width:20%; text-align: center;"><br>
